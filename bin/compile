@@ -6,6 +6,9 @@ import shutil
 import json
 import urllib2
 
+# Open stdout unbuffered
+sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
+
 def download_url(url, toFile):
     """Download a url to a file"""
     res = urllib2.urlopen(url)
