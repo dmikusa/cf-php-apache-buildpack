@@ -37,9 +37,11 @@ print 'Files in BuildPack: '
 print '\n'.join(os.listdir('/tmp/buildpacks/cf-php-apache-buildpack.git'))
 print 'ENV:'
 print '\n'.join(["%s=%s" % (x,y) for x,y in os.environ.iteritems()])
+print 'Buildpack Cache:'
+print '\n'.join(os.listdir(os.environ['BUILDPACK_CACHE']))
 
 # Load configuration options
-default_cfg_file = os.path.join('tmp',
+default_cfg_file = os.path.join('/tmp',
                                 'buildpacks',
                                 'cf-php-apache-buildpack.git',
                                 'default',
