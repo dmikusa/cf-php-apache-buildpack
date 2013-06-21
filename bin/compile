@@ -7,7 +7,7 @@ import json
 import urllib2
 
 # Open stdout unbuffered
-sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
+sys.stdout = os.fdopen(sys.stdout.fileno(), 'wb', 0)
 
 def download_url(url, toFile):
     """Download a url to a file"""
@@ -67,7 +67,7 @@ shutil.move(
     os.path.join(BUILD_DIR, 'php'))
 
 # Create a startup script
-with open(os.path.join(BUILD_DIR, 'start.sh')) as f:
+with open(os.path.join(BUILD_DIR, 'start.sh'), 'wt') as f:
     f.write('#!/usr/bin/env bash\n')
     f.write('%s -f %s -k start\n' % (
         os.path.join(BUILD_DIR, 'httpd', 'bin', 'apachectl'),
