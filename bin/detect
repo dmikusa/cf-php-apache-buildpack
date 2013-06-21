@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# bin/compile <build-dir> <cache-dir>
+
+# fail fast
+set -e
+
+BUILD_DIR=$1
+CACHE_DIR=$2
+BIN_DIR=$(dirname $0)
+LP_DIR=`cd $(dirname $0); cd ..; pwd`
+
+echo "BUILD_DIR: $BUILD_DIR"
+echo "CACHE_DIR: $CACHE_DIR"
+echo "BIN_DIR: $BIN_DIR"
+echo "LP_DIR: $LP_DIR"
+
