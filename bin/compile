@@ -1,8 +1,31 @@
-#!/usr/bin/env bash
+#!/usr/bin/env python
+import sys
+import os.path
+import json
 
-if [ -f $1/index.php ]; then
-    echo "PHP" && exit 0
-else
-    echo "no" && exit 1
-fi
+# User's application files
+BUILD_DIR=sys.argv[1]
+# Temp space for the build pack
+CACHE_DIR=sys.argv[2]
+
+print 'Current Directory: %s' % os.getcwd()
+print 'Files in CWD:'
+print os.listdir('.').join('\n')
+
+# Make sure cache & build directories exist
+if not os.path.exists(BUILD_DIR):
+    os.makedirs(BUILD_DIR)
+if not os.path.exists(CACHE_DIR):
+    os.makedirs(CACHE_DIR)
+
+# Read Configuration
+#config_file = os.path.join(BUILD_DIR, 'config', 'options.json')
+#if os.path.exists(config_file):
+#    config = json.load(open(config_file))
+
+
+# Download HTTPD & Install
+# Download PHP & Install
+# Create a startup script
+
 

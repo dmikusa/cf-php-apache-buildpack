@@ -1,16 +1,15 @@
-#!/usr/bin/env bash
-# bin/compile <build-dir> <cache-dir>
+#!/usr/bin/env python
+import sys
+import os
 
-# fail fast
-set -e
+# Location of the user's application files
+BUILD_DIR=sys.argv[1]
 
-BUILD_DIR=$1
-CACHE_DIR=$2
-BIN_DIR=$(dirname $0)
-LP_DIR=`cd $(dirname $0); cd ..; pwd`
-
-echo "BUILD_DIR: $BUILD_DIR"
-echo "CACHE_DIR: $CACHE_DIR"
-echo "BIN_DIR: $BIN_DIR"
-echo "LP_DIR: $LP_DIR"
+for root, dirs, files in os.walk(BUILD_DIR):
+    for f in files:
+        if f.endswith('.php'):
+            print 'PHP'
+            sys.exit(0)
+print 'no'
+sys.exit(1)
 
