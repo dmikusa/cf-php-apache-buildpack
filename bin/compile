@@ -36,6 +36,7 @@ default_cfg_file = os.path.join('/tmp',
 default_cfg = json.load(open(default_cfg_file))
 user_config_file = os.path.join(BUILD_DIR, 'config', 'options.json')
 if os.path.exists(user_config_file):
+    print 'Custom config found, overriding default options'
     user_config = json.load(open(user_config_file))
     config = dict(default_cfg.items() + user_config.items())
 else:
