@@ -1,0 +1,3 @@
+#!/usr/bin/env python
+print 'default_process_types:'
+print '  web: ./start.sh'

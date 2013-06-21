@@ -1,10 +1,20 @@
 #!/usr/bin/env python
 import sys
+import os
 import os.path
+import shutil
 import json
+import urllib2
+
+def download_url(url, toFile):
+    """Download a url to a file"""
+    res = urllib2.urlopen(url)
+    with open(toFile, 'w') as f:
+        f.write(u.read())
 
 # User's application files
 BUILD_DIR=sys.argv[1]
+
 # Temp space for the build pack
 CACHE_DIR=sys.argv[2]
 
@@ -25,15 +35,54 @@ print 'Files in Build: '
 print '\n'.join(os.listdir(BUILD_DIR))
 print 'Files in BuildPack: '
 print '\n'.join(os.listdir('/tmp/buildpacks/cf-php-apache-buildpack.git'))
+print 'ENV:'
+print '\n'.join(["%s=%s" % (x,y) for x,y in os.environ.iteritems()])
 
-# Read Configuration
-#config_file = os.path.join(BUILD_DIR, 'config', 'options.json')
-#if os.path.exists(config_file):
-#    config = json.load(open(config_file))
+# Load configuration options
+default_cfg_file = os.path.join('tmp',
+                                'buildpacks',
+                                'cf-php-apache-buildpack.git',
+                                'default',
+                                'options.json')
+default_cfg = json.load(open(default_cfg_file))
+user_config_file = os.path.join(BUILD_DIR, 'config', 'options.json')
+if os.path.exists(config_file):
+    user_config = json.load(open(user_config_file))
+config = dict(default_cfg.items() + user_config.items())
 
+# Location of Downloads
+BIN_URL='https://dl.dropboxusercontent.com/u/25717459/binaries'
 
 # Download HTTPD & Install
-# Download PHP & Install
-# Create a startup script
+httpd_bin_file = 'httpd-%s-bin.tar.gz' % config['HTTPD_VERSION']
+print 'Configuring HTTPD Version: %s' % config['HTTPD_VERSION']
+download_url(
+    os.path.join(BIN_URL, httpd_bin_file),
+    os.path.join(CACHE_DIR, httpd_bin_file))
+os.system('cd %s; gunzip -c %s | tar xf -' % (CACHE_DIR, httpd_bin_file))
+shutil.move(
+    os.path.join(CACHE_DIR, httpd_bin_file[:-7]),
+    os.path.join(BUILD_DIR, 'httpd'))
 
+# Download PHP & Install
+php_bin_file = 'php-%s-bin.tar.gz' % config['PHP_VERSION']
+print 'Configuring PHP Version: %s' % config['PHP_VERSION']
+download_url(
+    os.path.join(BIN_URL, php_bin_file),
+    os.path.join(CACHE_DIR, php_bin_file))
+os.system('cd %s; gunzip -c %s | tar xf -' % (CACHE_DIR, php_bin_file))
+shutil.move(
+    os.path.join(CACHE_DIR, php_bin_file[:-7]),
+    os.path.join(BUILD_DIR, 'php'))
+
+# Create a startup script
+with open(os.path.join(BUILD_DIR, 'start.sh')) as f:
+    f.write('#!/usr/bin/env bash\n')
+    f.write('%s -f %s -k start\n' % (
+        os.path.join(BUILD_DIR, 'httpd', 'bin', 'apachectl'),
+        os.path.join(BUILD_DIR, 'httpd', 'conf', 'httpd.conf')))
+    f.write('while [ 1 -eq 1 ]; do\n')
+    f.write('    sleep 100000\n')
+    f.write('done\n');
+os.chmod(os.path.join(BUILD_DIR, 'start.sh'), 0755)
 
