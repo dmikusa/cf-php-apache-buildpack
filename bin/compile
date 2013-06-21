@@ -13,6 +13,10 @@ print 'Cache Dir: %s' % CACHE_DIR
 print 'Current Directory: %s' % os.getcwd()
 print 'Files in CWD:'
 print '\n'.join(os.listdir('.'))
+print 'Files in Cache:'
+print '\n'.join(os.listdir(CACHE_DIR))
+print 'Files in Build: '
+print '\n'.join(os.listdir(BUILD_DIR))
 
 # Make sure cache & build directories exist
 if not os.path.exists(BUILD_DIR):
