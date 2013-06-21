@@ -70,8 +70,8 @@ shutil.move(
 with open(os.path.join(BUILD_DIR, 'start.sh'), 'wt') as f:
     f.write('#!/usr/bin/env bash\n')
     f.write('%s -f %s -k start\n' % (
-        os.path.join(BUILD_DIR, 'httpd', 'bin', 'apachectl'),
-        os.path.join(BUILD_DIR, 'httpd', 'conf', 'httpd.conf')))
+        os.path.join("$HOME", 'httpd', 'bin', 'apachectl'),
+        os.path.join("$HOME", 'httpd', 'conf', 'httpd.conf')))
     f.write('while [ 1 -eq 1 ]; do\n')
     f.write('    sleep 100000\n')
     f.write('done\n');
