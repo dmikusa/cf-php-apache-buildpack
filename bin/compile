@@ -10,7 +10,7 @@ def download_url(url, toFile):
     """Download a url to a file"""
     res = urllib2.urlopen(url)
     with open(toFile, 'w') as f:
-        f.write(u.read())
+        f.write(res.read())
 
 # User's application files
 BUILD_DIR=sys.argv[1]
