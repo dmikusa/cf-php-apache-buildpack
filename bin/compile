@@ -23,6 +23,8 @@ print 'Files in Cache:'
 print '\n'.join(os.listdir(CACHE_DIR))
 print 'Files in Build: '
 print '\n'.join(os.listdir(BUILD_DIR))
+print 'Files in BuildPack: '
+print '\n'.join(os.listdir('/tmp/buildpacks/cf-php-apache-buildpack.git'))
 
 # Read Configuration
 #config_file = os.path.join(BUILD_DIR, 'config', 'options.json')
