@@ -24,22 +24,6 @@ if not os.path.exists(BUILD_DIR):
 if not os.path.exists(CACHE_DIR):
     os.makedirs(CACHE_DIR)
 
-print 'Build Dir: %s' % BUILD_DIR
-print 'Cache Dir: %s' % CACHE_DIR
-print 'Current Directory: %s' % os.getcwd()
-print 'Files in CWD:'
-print '\n'.join(os.listdir('.'))
-print 'Files in Cache:'
-print '\n'.join(os.listdir(CACHE_DIR))
-print 'Files in Build: '
-print '\n'.join(os.listdir(BUILD_DIR))
-print 'Files in BuildPack: '
-print '\n'.join(os.listdir('/tmp/buildpacks/cf-php-apache-buildpack.git'))
-print 'ENV:'
-print '\n'.join(["%s=%s" % (x,y) for x,y in os.environ.iteritems()])
-print 'Buildpack Cache:'
-print '\n'.join(os.listdir(os.environ['BUILDPACK_CACHE']))
-
 # Load configuration options
 default_cfg_file = os.path.join('/tmp',
                                 'buildpacks',
@@ -48,7 +32,7 @@ default_cfg_file = os.path.join('/tmp',
                                 'options.json')
 default_cfg = json.load(open(default_cfg_file))
 user_config_file = os.path.join(BUILD_DIR, 'config', 'options.json')
-if os.path.exists(config_file):
+if os.path.exists(user_config_file):
     user_config = json.load(open(user_config_file))
 config = dict(default_cfg.items() + user_config.items())
 
