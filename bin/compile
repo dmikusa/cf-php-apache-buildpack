@@ -66,6 +66,14 @@ shutil.move(
     os.path.join(CACHE_DIR, php_bin_file[:-7]),
     os.path.join(BUILD_DIR, 'php'))
 
+# Setup php.ini
+php_ini_file = os.path.join(BUILD_DIR, 'config', 'php.ini')
+if os.path.exists(php_ini_file):
+    print 'Found custom php.ini file, installing.'
+    shutil.copy(php_ini_file,
+                os.path.join(BUILD_DIR, 'php', 'etc', 'php.ini'))
+
+
 # Create a startup script
 with open(os.path.join(BUILD_DIR, 'start.sh'), 'wt') as f:
     f.write('#!/usr/bin/env bash\n')
