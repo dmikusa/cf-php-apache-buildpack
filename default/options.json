@@ -1,1 +1,6 @@
-{"ADMIN_EMAIL": "admin@localhost", "HTTPD_VERSION": "2.2.24", "PHP_VERSION": "5.4.16"}
+{
+    "ADMIN_EMAIL": "admin@localhost",
+    "DOWNLOAD_URL": "https://dl.dropboxusercontent.com/u/25717459/binaries",
+    "HTTPD_VERSION": "2.2.24", 
+    "PHP_VERSION": "5.4.16"
+}
