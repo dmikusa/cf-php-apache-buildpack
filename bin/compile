@@ -56,6 +56,25 @@ shutil.move(
     os.path.join(CACHE_DIR, httpd_bin_file[:-7]),
     os.path.join(BUILD_DIR, 'httpd'))
 
+# Allow customization of HTTPD configuration
+cfg_files = (
+    'httpd-default.conf',
+    'httpd-directories.conf',
+    'httpd-logging.conf',
+    'httpd-mime.conf',
+    'httpd-modules.conf',
+    'httpd-mpm.conf',
+    'httpd-php.conf'
+)
+user_cfg_path = os.path.join(BUILD_DIR, 'config', 'httpd')
+httpd_cfg_path = os.path.join(BUILD_DIR, 'httpd', 'conf', 'extra')
+for cfg_file in cfg_files:
+    if os.path.exists(os.path.join(user_cfg_path, cfg_file)):
+        print 'Found custom %s file, installing.' % cfg_file
+        shutil.copy(
+            os.path.join(user_cfg_path, cfg_file),
+            os.path.join(httpd_cfg_path, cfg_file))
+
 # Download PHP & Install
 php_bin_file = 'php-%s-bin.tar.gz' % config['PHP_VERSION']
 print 'Configuring PHP Version: %s' % config['PHP_VERSION']
