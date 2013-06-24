@@ -9,9 +9,9 @@ Instructions
 
 The build pack has some conventions for the format of your application.  It expects a folder structure like this.
 
-  htdocs -> your application files & static resources
-  config -> PHP and HTTPD specific configuration settings
-  lib    -> PHP libraries used by your application (directory is on the include_path)
+  - htdocs -> your application files & static resources
+  - config -> PHP and HTTPD specific configuration settings
+  - lib    -> PHP libraries used by your application (directory is on the include_path)
   
 There is no further structure for the *htdocs* and *lib* directories.  You can set them up however you wish.  
 
@@ -25,10 +25,10 @@ The build pack comes with sane defaults for small to medium sized applications. 
 
 In the *config/options.json* file, you have the following options:
 
-  ADMIN_EMAIL   -> the administrator email defined in HTTPD (default admin@localhost)
-  DOWNLOAD_URL  -> the URL from where to download the PHP & HTTPD binaries
-  HTTPD_VERSION -> the version of HTTPD to install (default latest 2.2 release)
-  PHP_VERSION   -> the version of PHP to install (default latest 5.4 release)
+  - ADMIN_EMAIL   -> the administrator email defined in HTTPD (default admin@localhost)
+  - DOWNLOAD_URL  -> the URL from where to download the PHP & HTTPD binaries
+  - HTTPD_VERSION -> the version of HTTPD to install (default latest 2.2 release)
+  - PHP_VERSION   -> the version of PHP to install (default latest 5.4 release)
 
 As the file extension indicates, the file should be valid JSON.
 
@@ -44,25 +44,26 @@ The configuration that is used by the build pack for HTTPD is broken down into m
 
 The following configuration files are used by the build pack.
 
-  httpd-default.conf     -> some default options used by HTTPD
-  httpd-logging.conf     -> the logging configuration used by HTTPD
-  httpd-modules.conf     -> the modules loaded by HTTPD
-  httpd-mpm.conf         -> the configuration options for the worker MPM module
-  httpd-directories.conf -> directory options
-  httpd-mime.conf        -> the mime configuration & directory index settings
-  httpd-php.conf         -> the PHP & mod_fcgid configuration
+  - httpd-default.conf     -> some default options used by HTTPD
+  - httpd-logging.conf     -> the logging configuration used by HTTPD
+  - httpd-modules.conf     -> the modules loaded by HTTPD
+  - httpd-mpm.conf         -> the configuration options for the worker MPM module
+  - httpd-directories.conf -> directory options
+  - httpd-mime.conf        -> the mime configuration & directory index settings
+  - httpd-php.conf         -> the PHP & mod_fcgid configuration
 
 
 Usage
 -----
 
-To use the build pack, specify the --buildpack option to the *cf* command.
+To use the build pack, specify the ```--buildpack``` option to the *cf* command.
 
 Ex:
 
+```
    cd my-app-dir   # top level dir for your project
    cf push --buildpack=https://github.com/dmikusa-pivotal/cf-php-apache-buildpack.git
-
+```
 
 Troubleshooting
 ---------------
