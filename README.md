@@ -35,7 +35,7 @@ As the file extension indicates, the file should be valid JSON.
 
 #### php.ini
 
-This allows you to override the *php.ini* file that is used by your application.  If you include a custom *php.ini* file it will completely override the default one used by the build pack.  Because of this, it is recommended that you start with the [file from the build pack](need link) and customisze it.
+This allows you to override the *php.ini* file that is used by your application.  If you include a custom *php.ini* file it will completely override the default one used by the build pack.  Because of this, it is recommended that you start with the [file from the build pack](https://github.com/dmikusa-pivotal/cf-php-apache-buildpack/blob/master/default/php.ini) and customisze it.
 
 
 #### httpd directory
@@ -44,14 +44,15 @@ The configuration that is used by the build pack for HTTPD is broken down into m
 
 The following configuration files are used by the build pack.
 
-  - httpd-default.conf     -> some default options used by HTTPD
-  - httpd-logging.conf     -> the logging configuration used by HTTPD
-  - httpd-modules.conf     -> the modules loaded by HTTPD
-  - httpd-mpm.conf         -> the configuration options for the worker MPM module
-  - httpd-directories.conf -> directory options
-  - httpd-mime.conf        -> the mime configuration & directory index settings
-  - httpd-php.conf         -> the PHP & mod_fcgid configuration
+  - [httpd-default.conf](https://github.com/dmikusa-pivotal/cf-php-apache-buildpack/blob/master/default/extra/httpd-default.conf) -> some default options used by HTTPD
+  - [httpd-logging.conf](https://github.com/dmikusa-pivotal/cf-php-apache-buildpack/blob/master/default/extra/httpd-logging.conf) -> the logging configuration used by HTTPD
+  - [httpd-modules.conf](https://github.com/dmikusa-pivotal/cf-php-apache-buildpack/blob/master/default/extra/httpd-modules.conf) -> the modules loaded by HTTPD
+  - [httpd-mpm.conf](https://github.com/dmikusa-pivotal/cf-php-apache-buildpack/blob/master/default/extra/httpd-mpm.conf) -> the configuration options for the worker MPM module
+  - [httpd-directories.conf](https://github.com/dmikusa-pivotal/cf-php-apache-buildpack/blob/master/default/extra/httpd-directories.conf) -> directory options
+  - [httpd-mime.conf](https://github.com/dmikusa-pivotal/cf-php-apache-buildpack/blob/master/default/extra/httpd-mime.conf) -> the mime configuration & directory index settings
+  - [httpd-php.conf](https://github.com/dmikusa-pivotal/cf-php-apache-buildpack/blob/master/default/extra/httpd-php.conf) -> the PHP & mod_fcgid configuration
 
+While not possible to override, here is a link to the [main httpd.conf file](https://github.com/dmikusa-pivotal/cf-php-apache-buildpack/blob/master/default/httpd.conf).
 
 Usage
 -----
