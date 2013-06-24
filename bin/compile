@@ -27,10 +27,13 @@ if not os.path.exists(BUILD_DIR):
 if not os.path.exists(CACHE_DIR):
     os.makedirs(CACHE_DIR)
 
+# Build pack location
+BP_DIR=os.path.join('/tmp',
+                    'buildpacks',
+                    'cf-php-apache-buildpack.git')
+
 # Load configuration options
-default_cfg_file = os.path.join('/tmp',
-                                'buildpacks',
-                                'cf-php-apache-buildpack.git',
+default_cfg_file = os.path.join(BP_DIR,
                                 'default',
                                 'options.json')
 default_cfg = json.load(open(default_cfg_file))
