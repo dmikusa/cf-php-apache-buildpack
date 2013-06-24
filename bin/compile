@@ -59,24 +59,31 @@ shutil.move(
     os.path.join(CACHE_DIR, httpd_bin_file[:-7]),
     os.path.join(BUILD_DIR, 'httpd'))
 
-# Allow customization of HTTPD configuration
+# Install HTTPD Configuration
+default_cfg_dir = os.path.join(BP_DIR, 'default')
+httpd_cfg_dir = os.path.join(BUILD_DIR, 'httpd', 'conf')
+user_cfg_dir = os.path.join(BUILD_DIR, 'config', 'httpd')
 cfg_files = (
-    'httpd-default.conf',
-    'httpd-directories.conf',
-    'httpd-logging.conf',
-    'httpd-mime.conf',
-    'httpd-modules.conf',
-    'httpd-mpm.conf',
-    'httpd-php.conf'
+    'httpd.conf',
+    os.path.join('extra', 'httpd-default.conf'),
+    os.path.join('extra', 'httpd-directories.conf'),
+    os.path.join('extra', 'httpd-logging.conf'),
+    os.path.join('extra', 'httpd-mime.conf'),
+    os.path.join('extra', 'httpd-modules.conf'),
+    os.path.join('extra', 'httpd-mpm.conf'),
+    os.path.join('extra', 'httpd-php.conf')
 )
-user_cfg_path = os.path.join(BUILD_DIR, 'config', 'httpd')
-httpd_cfg_path = os.path.join(BUILD_DIR, 'httpd', 'conf', 'extra')
 for cfg_file in cfg_files:
-    if os.path.exists(os.path.join(user_cfg_path, cfg_file)):
+    if os.path.exists(os.path.join(user_cfg_dir, cfg_file)) \
+            and cfg_file not "httpd.conf":
         print 'Found custom %s file, installing.' % cfg_file
         shutil.copy(
-            os.path.join(user_cfg_path, cfg_file),
-            os.path.join(httpd_cfg_path, cfg_file))
+            os.path.join(user_cfg_dir, cfg_file),
+            os.path.join(httpd_cfg_dir, cfg_file))
+    else:
+        shutil.copy(
+            os.path.join(default_cfg_dir, cfg_file),
+            os.path.join(httpd_cfg_dir, cfg_file))
 
 # Download PHP & Install
 php_bin_file = 'php-%s-bin.tar.gz' % config['PHP_VERSION']
@@ -95,7 +102,9 @@ if os.path.exists(php_ini_file):
     print 'Found custom php.ini file, installing.'
     shutil.copy(php_ini_file,
                 os.path.join(BUILD_DIR, 'php', 'etc', 'php.ini'))
-
+else:
+    shutil.copy(os.path.join(default_cfg_dir, 'php.ini'),
+                os.path.join(BUILD_DIR, 'php', 'etc', 'php.ini'))
 
 # Create a startup script
 with open(os.path.join(BUILD_DIR, 'start.sh'), 'wt') as f:
