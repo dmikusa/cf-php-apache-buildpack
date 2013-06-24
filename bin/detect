@@ -3,7 +3,7 @@ import sys
 import os
 
 # Location of the user's application files
-BUILD_DIR=sys.argv[1]
+BUILD_DIR = sys.argv[1]
 
 for root, dirs, files in os.walk(BUILD_DIR):
     for f in files:
@@ -12,4 +12,3 @@ for root, dirs, files in os.walk(BUILD_DIR):
             sys.exit(0)
 print 'no'
 sys.exit(1)
-
