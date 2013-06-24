@@ -9,6 +9,7 @@ import urllib2
 # Open stdout unbuffered
 sys.stdout = os.fdopen(sys.stdout.fileno(), 'wb', 0)
 
+
 def download_url(url, toFile):
     """Download a url to a file"""
     res = urllib2.urlopen(url)
@@ -16,10 +17,10 @@ def download_url(url, toFile):
         f.write(res.read())
 
 # User's application files
-BUILD_DIR=sys.argv[1]
+BUILD_DIR = sys.argv[1]
 
 # Temp space for the build pack
-CACHE_DIR=sys.argv[2]
+CACHE_DIR = sys.argv[2]
 
 # Make sure cache & build directories exist
 if not os.path.exists(BUILD_DIR):
@@ -28,9 +29,9 @@ if not os.path.exists(CACHE_DIR):
     os.makedirs(CACHE_DIR)
 
 # Build pack location
-BP_DIR=os.path.join('/tmp',
-                    'buildpacks',
-                    'cf-php-apache-buildpack.git')
+BP_DIR = os.path.join('/tmp',
+                      'buildpacks',
+                      'cf-php-apache-buildpack.git')
 
 # Load configuration options
 default_cfg_file = os.path.join(BP_DIR,
@@ -46,7 +47,7 @@ else:
     config = default_cfg
 
 # Location of Downloads
-BIN_URL=config['DOWNLOAD_URL']
+BIN_URL = config['DOWNLOAD_URL']
 
 # Download HTTPD & Install
 httpd_bin_file = 'httpd-%s-bin.tar.gz' % config['HTTPD_VERSION']
@@ -75,7 +76,7 @@ cfg_files = (
 )
 for cfg_file in cfg_files:
     if os.path.exists(os.path.join(user_cfg_dir, cfg_file)) \
-            and cfg_file not "httpd.conf":
+            and cfg_file != "httpd.conf":
         print 'Found custom %s file, installing.' % cfg_file
         shutil.copy(
             os.path.join(user_cfg_dir, cfg_file),
@@ -115,6 +116,5 @@ with open(os.path.join(BUILD_DIR, 'start.sh'), 'wt') as f:
         os.path.join("$HOME", 'httpd', 'conf', 'httpd.conf')))
     f.write('while [ 1 -eq 1 ]; do\n')
     f.write('    sleep 100000\n')
-    f.write('done\n');
+    f.write('done\n')
 os.chmod(os.path.join(BUILD_DIR, 'start.sh'), 0755)
-
