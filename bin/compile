@@ -33,6 +33,9 @@ BUILD_DIR = sys.argv[1]
 # Cache space for the build pack
 CACHE_DIR = sys.argv[2]
 
+# Temp space
+TMP_DIR = os.environ.get('TMPDIR', '/tmp')
+
 # Make sure cache & build directories exist
 if not os.path.exists(BUILD_DIR):
     os.makedirs(BUILD_DIR)
