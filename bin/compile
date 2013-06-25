@@ -10,16 +10,27 @@ import urllib2
 sys.stdout = os.fdopen(sys.stdout.fileno(), 'wb', 0)
 
 
-def download_url(url, toFile):
+def calc_sha1(filePath):
+    with open(filePath, 'rb') as f:
+        d = hashlib.sha1()
+        for buf in iter(partial(f.read, 256), ''):
+            d.update(buf)
+    return d.hexdigest()
+
+def download_url(url, toFile, sha1):
     """Download a url to a file"""
-    res = urllib2.urlopen(url)
-    with open(toFile, 'w') as f:
-        f.write(res.read())
+    if not os.path.exists(toFile) or sha1 != calc_sha1(toFile):
+        res = urllib2.urlopen(url)
+        with open(toFile, 'w') as f:
+            f.write(res.read())
+        print 'Downloaded [%s]' % toFile
+    else:
+        print 'Cached [%s]' % toFile
 
 # User's application files
 BUILD_DIR = sys.argv[1]
 
-# Temp space for the build pack
+# Cache space for the build pack
 CACHE_DIR = sys.argv[2]
 
 # Make sure cache & build directories exist
@@ -54,7 +65,8 @@ httpd_bin_file = 'httpd-%s-bin.tar.gz' % config['HTTPD_VERSION']
 print 'Configuring HTTPD Version: %s' % config['HTTPD_VERSION']
 download_url(
     os.path.join(BIN_URL, httpd_bin_file),
-    os.path.join(CACHE_DIR, httpd_bin_file))
+    os.path.join(CACHE_DIR, httpd_bin_file),
+    config['HTTPD_SHA1'])
 os.system('cd %s; gunzip -c %s | tar xf -' % (CACHE_DIR, httpd_bin_file))
 shutil.move(
     os.path.join(CACHE_DIR, httpd_bin_file[:-7]),
@@ -91,7 +103,8 @@ php_bin_file = 'php-%s-bin.tar.gz' % config['PHP_VERSION']
 print 'Configuring PHP Version: %s' % config['PHP_VERSION']
 download_url(
     os.path.join(BIN_URL, php_bin_file),
-    os.path.join(CACHE_DIR, php_bin_file))
+    os.path.join(CACHE_DIR, php_bin_file),
+    config['PHP_SHA1'])
 os.system('cd %s; gunzip -c %s | tar xf -' % (CACHE_DIR, php_bin_file))
 shutil.move(
     os.path.join(CACHE_DIR, php_bin_file[:-7]),
