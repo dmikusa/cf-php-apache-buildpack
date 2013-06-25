@@ -6,6 +6,7 @@ import shutil
 import json
 import urllib2
 import hashlib
+from functools import partial
 
 # Open stdout unbuffered
 sys.stdout = os.fdopen(sys.stdout.fileno(), 'wb', 0)
