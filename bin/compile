@@ -124,6 +124,9 @@ else:
     shutil.copy(os.path.join(default_cfg_dir, 'php.ini'),
                 os.path.join(BUILD_DIR, 'php', 'etc', 'php.ini'))
 
+# Install PECL & PEAR Extensions
+os.system('cd %s; ./bin/pecl install mailparse' % os.path.join(BUILD_DIR, "php"))
+
 # Create a startup script
 with open(os.path.join(BUILD_DIR, 'start.sh'), 'wt') as f:
     f.write('#!/usr/bin/env bash\n')
