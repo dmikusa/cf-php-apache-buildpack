@@ -125,6 +125,12 @@ else:
                 os.path.join(BUILD_DIR, 'php', 'etc', 'php.ini'))
 
 # Install PECL & PEAR Extensions
+with open(os.path.join(BUILD_DIR, 'php', 'etc', 'pear.conf'), 'r+') as f:
+    pearConf = f.read()
+    pearConf = pearConf.replace('/home/cloud/builds/php-5.4.16-bin/', os.path.join(BUILD_DIR, 'php'))
+    print "Updated pear.conf [%s]" % pearConf
+    f.seek(0)
+    f.write(pearConf)
 os.system('cd %s; ./bin/pecl -R "%s" install mailparse' % (os.path.join(BUILD_DIR, "php"), os.path.join(BUILD_DIR, "php")))
 
 # Create a startup script
