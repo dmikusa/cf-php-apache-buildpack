@@ -125,7 +125,7 @@ else:
                 os.path.join(BUILD_DIR, 'php', 'etc', 'php.ini'))
 
 # Install PECL & PEAR Extensions
-os.system('cd %s; ./bin/pecl install mailparse' % os.path.join(BUILD_DIR, "php"))
+os.system('cd %s; ./bin/pecl -R "%s" install mailparse' % (os.path.join(BUILD_DIR, "php"), os.path.join(BUILD_DIR, "php")))
 
 # Create a startup script
 with open(os.path.join(BUILD_DIR, 'start.sh'), 'wt') as f:
