@@ -21,7 +21,6 @@ def calc_sha1(filePath):
 
 def download_url(url, toFile, sha1):
     """Download a url to a file"""
-    print "Expected [%s] == Calculated [%s]" % (sha1, calc_sha1(toFile))
     if not os.path.exists(toFile) or sha1 != calc_sha1(toFile):
         res = urllib2.urlopen(url)
         with open(toFile, 'w') as f:
