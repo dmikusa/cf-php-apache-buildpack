@@ -19,6 +19,7 @@ def calc_sha1(filePath):
             d.update(buf)
     return d.hexdigest()
 
+
 def download_url(url, toFile, sha1):
     """Download a url to a file"""
     if not os.path.exists(toFile) or sha1 != calc_sha1(toFile):
