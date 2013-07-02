@@ -5,8 +5,6 @@ import os.path
 import shutil
 import json
 import urllib2
-import hashlib
-from functools import partial
 from subprocess import Popen
 from subprocess import PIPE
 
@@ -14,7 +12,7 @@ from subprocess import PIPE
 sys.stdout = os.fdopen(sys.stdout.fileno(), 'wb', 0)
 
 
-def calc_sha1(shaFile, checkFile):
+def check_sha1(shaFile, checkFile):
     cwd = os.getcwd()
     os.chdir(os.path.dirname(checkFile))
     proc = Popen(["shasum", "-c", shaFile, "-s"], stdout=PIPE)
@@ -24,6 +22,7 @@ def calc_sha1(shaFile, checkFile):
         print "shasum said [%s]" % output
     os.chdir(cwd)
     return retcode == 0
+
 
 def download_url(url, toFile, sha1):
     """Download a url to a file"""
@@ -35,20 +34,24 @@ def download_url(url, toFile, sha1):
     else:
         print 'Cached [%s]' % toFile
 
+
 def extract_files(inDir, zipFile):
     cwd = os.getcwd()
     os.chdir(inDir)
     if os.path.exists(zipFile):
-        proc = Popen("gunzip -c %s | tar xf -" % zipFile, stdout=PIPE, shell=True)
+        proc = Popen("gunzip -c %s | tar xf -" % zipFile,
+                     stdout=PIPE, shell=True)
         output, unused_err = proc.communicate()
         retcode = proc.poll()
         if retcode:
-            print "Extracting [%s] failed with return code [%d]" % (zipFile, retcode)
+            print "Extracting [%s] failed with return code [%d]" \
+                % (zipFile, retcode)
         if output:
             print "Output from extraction [%s]" % output
     else:
         print "Zip file [%s] does not exist in [%s]" % (zipFile, inDir)
     os.chdir(cwd)
+
 
 def install_mod(phpDir, modType, modStr):
     cwd = os.getcwd()
@@ -58,7 +61,8 @@ def install_mod(phpDir, modType, modStr):
         output, unused_err = proc.communicate()
         retcode = proc.poll()
         if retcode:
-            print "Install [%s, %s] return code [%d]" % (modType, modStr, retcode)
+            print "Install [%s, %s] return code [%d]" \
+                % (modType, modStr, retcode)
         if output:
             print "Output from install [%s]" % output
     else:
