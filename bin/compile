@@ -41,7 +41,8 @@ def extract_files(inDir, zipFile):
         retcode = proc.poll()
         if retcode:
             print "Extracting [%s] failed with return code [%d]" % (zipFile, retcode)
-        print "Output from extraction [%s]" % output
+        if output:
+            print "Output from extraction [%s]" % output
     else:
         print "Zip file [%s] does not exist in [%s]" % (zipFile, inDir)
     os.chdir(cwd)
