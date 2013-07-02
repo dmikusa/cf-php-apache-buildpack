@@ -158,16 +158,6 @@ else:
     shutil.copy(os.path.join(default_cfg_dir, 'php.ini'),
                 php_ini_install_file)
 
-# Install PECL Extensions
-pecl_mods_file = os.path.join(BUILD_DIR, 'config', 'pecl-mods.txt')
-if os.path.exists(pecl_mods_file):
-    with open(pecl_mods_file, 'rt') as pecl_mods:
-        for mod in pecl_mods:
-            mod = mod.strip()
-            print "Installing PECL mod [%s]" % mod.strip()
-            install_mod(php_install_dir, "pecl", mod)
-#TODO: pecl modules require c compilation, grab the installed files some how and cache them
-
 # Install PEAR Modules
 pear_mods_file = os.path.join(BUILD_DIR, 'config', 'pear-mods.txt')
 if os.path.exists(pear_mods_file):
