@@ -19,6 +19,7 @@ def calc_sha1(filePath):
         d = hashlib.sha1()
         for buf in iter(partial(f.read, 256), ''):
             d.update(buf)
+    print "Sha1Sum for [%s] is [%s]" % (filePath, d.hexdigest())
     return d.hexdigest()
 
 
