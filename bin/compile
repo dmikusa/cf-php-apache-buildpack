@@ -38,7 +38,7 @@ def extract_files(inDir, zipFile):
     if os.path.exists(zipFile):
         proc = Popen("gunzip -c %s | tar xf -" % zipFile, stdout=PIPE, shell=True)
         output, unused_err = proc.communicate()
-        retcode = process.poll()
+        retcode = proc.poll()
         if retcode:
             print "Extracting [%s] failed with return code [%d]" % (zipFile, retcode)
         print "Output from extraction [%s]" % output
