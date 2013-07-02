@@ -7,6 +7,7 @@ import json
 import urllib2
 import hashlib
 from functools import partial
+from subprocess import check_output
 
 # Open stdout unbuffered
 sys.stdout = os.fdopen(sys.stdout.fileno(), 'wb', 0)
@@ -29,6 +30,16 @@ def download_url(url, toFile, sha1):
         print 'Downloaded [%s]' % toFile
     else:
         print 'Cached [%s]' % toFile
+
+def extract_files(inDir, zipFile):
+    cwd = os.getcsd()
+    os.chdir(inDir)
+    if os.path.exists(zipFile):
+        output = check_output("gunzip -c %s | tar xf -" % zipFile, shell=True)
+        print "Output from extraction [%s]" % output
+    else:
+        print "Zip file [%s] does not exist in [%s]" % (zipFile, inDir)
+    os.chdir(cwd)
 
 # User's application files
 BUILD_DIR = sys.argv[1]
@@ -71,7 +82,7 @@ download_url(
     os.path.join(BIN_URL, httpd_bin_file),
     os.path.join(CACHE_DIR, httpd_bin_file),
     config['HTTPD_SHA1'])
-os.system('cd %s; gunzip -c %s | tar xf -' % (CACHE_DIR, httpd_bin_file))
+extract_files(CACHE_DIR, httpd_bin_file)
 shutil.move(
     os.path.join(CACHE_DIR, httpd_bin_file[:-7]),
     os.path.join(BUILD_DIR, 'httpd'))
@@ -109,7 +120,7 @@ download_url(
     os.path.join(BIN_URL, php_bin_file),
     os.path.join(CACHE_DIR, php_bin_file),
     config['PHP_SHA1'])
-os.system('cd %s; gunzip -c %s | tar xf -' % (CACHE_DIR, php_bin_file))
+extract_files(CACHE_DIR, php_bin_file)
 php_install_dir = os.path.join(BUILD_DIR, 'php')
 shutil.move(
     os.path.join(CACHE_DIR, php_bin_file[:-7]),
