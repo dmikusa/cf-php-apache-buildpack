@@ -15,11 +15,11 @@ sys.stdout = os.fdopen(sys.stdout.fileno(), 'wb', 0)
 def sha1_matches(shaFile, checkFile):
     cwd = os.getcwd()
     os.chdir(os.path.dirname(checkFile))
-    proc = Popen(["shasum", "-c", shaFile], stdout=PIPE)
+    proc = Popen(["shasum", "-c", shaFile, "-s"], stdout=PIPE)
     output, unused_err = proc.communicate()
     retcode = proc.poll()
     if output:
-        print "shasum said [%s]" % output
+        print "shasum said [%s]" % output.strip()
     os.chdir(cwd)
     return retcode == 0
 
