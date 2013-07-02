@@ -33,7 +33,7 @@ def download_url(url, toFile, sha1):
         print 'Cached [%s]' % toFile
 
 def extract_files(inDir, zipFile):
-    cwd = os.getcsd()
+    cwd = os.getcwd()
     os.chdir(inDir)
     if os.path.exists(zipFile):
         proc = Popen("gunzip -c %s | tar xf -" % zipFile, stdout=PIPE, shell=True)
