@@ -15,7 +15,7 @@ sys.stdout = os.fdopen(sys.stdout.fileno(), 'wb', 0)
 def check_sha1(shaFile, checkFile):
     cwd = os.getcwd()
     os.chdir(os.path.dirname(checkFile))
-    proc = Popen(["shasum", "-c", shaFile, "-s"], stdout=PIPE)
+    proc = Popen(["shasum", "-c", shaFile], stdout=PIPE)
     output, unused_err = proc.communicate()
     retcode = proc.poll()
     if output:
