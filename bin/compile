@@ -7,7 +7,8 @@ import json
 import urllib2
 import hashlib
 from functools import partial
-from subprocess import check_output
+from subprocess import Popen
+from subprocess import PIPE
 
 # Open stdout unbuffered
 sys.stdout = os.fdopen(sys.stdout.fileno(), 'wb', 0)
@@ -35,7 +36,11 @@ def extract_files(inDir, zipFile):
     cwd = os.getcsd()
     os.chdir(inDir)
     if os.path.exists(zipFile):
-        output = check_output("gunzip -c %s | tar xf -" % zipFile, shell=True)
+        proc = Popen(stdout=PIPE, "gunzip -c %s | tar xf -" % zipFile, shell=True)
+        output, unused_err = proc.communicate()
+        retcode = process.poll()
+        if retcode:
+            print "Extracting [%s] failed with return code [%d]" % (zipFile, retcode)
         print "Output from extraction [%s]" % output
     else:
         print "Zip file [%s] does not exist in [%s]" % (zipFile, inDir)
