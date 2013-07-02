@@ -12,7 +12,7 @@ from subprocess import PIPE
 sys.stdout = os.fdopen(sys.stdout.fileno(), 'wb', 0)
 
 
-def check_sha1(shaFile, checkFile):
+def sha1_matches(shaFile, checkFile):
     cwd = os.getcwd()
     os.chdir(os.path.dirname(checkFile))
     proc = Popen(["shasum", "-c", shaFile], stdout=PIPE)
@@ -26,7 +26,7 @@ def check_sha1(shaFile, checkFile):
 
 def download_url(url, toFile, sha1):
     """Download a url to a file"""
-    if not os.path.exists(toFile) or check_sha1(sha1, toFile):
+    if not os.path.exists(toFile) or not sha1_matches(sha1, toFile):
         res = urllib2.urlopen(url)
         with open(toFile, 'w') as f:
             f.write(res.read())
