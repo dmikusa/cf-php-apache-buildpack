@@ -51,7 +51,7 @@ def install_mod(phpDir, modType, modStr):
     cwd = os.getcwd()
     os.chdir(phpDir)
     if modType == "pear" or modType == "pecl":
-        proc = Proc(['./bin/%s' % modType, "install", modStr], stdout=PIPE)
+        proc = Popen(['./bin/%s' % modType, "install", modStr], stdout=PIPE)
         output, unused_err = proc.communicate()
         retcode = proc.poll()
         if retcode:
