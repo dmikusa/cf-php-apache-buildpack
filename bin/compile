@@ -14,17 +14,20 @@ from subprocess import PIPE
 sys.stdout = os.fdopen(sys.stdout.fileno(), 'wb', 0)
 
 
-def calc_sha1(filePath):
-    with open(filePath, 'rb') as f:
-        d = hashlib.sha1()
-        for buf in iter(partial(f.read, 256), ''):
-            d.update(buf)
-    return d.hexdigest()
-
+def calc_sha1(shaFile, checkFile):
+    cwd = os.getcwd()
+    os.chdir(os.path.dirname(checkFile))
+    proc = Popen(["shasum", "-c", shaFile, "-s"], stdout=PIPE)
+    output, unused_err = proc.communicate()
+    retcode = proc.poll()
+    if output:
+        print "shasum said [%s]" % output
+    os.chdir(cwd)
+    return retcode == 0
 
 def download_url(url, toFile, sha1):
     """Download a url to a file"""
-    if not os.path.exists(toFile) or sha1 != calc_sha1(toFile):
+    if not os.path.exists(toFile) or check_sha1(sha1, toFile):
         res = urllib2.urlopen(url)
         with open(toFile, 'w') as f:
             f.write(res.read())
@@ -102,7 +105,7 @@ print 'Configuring HTTPD Version: %s' % config['HTTPD_VERSION']
 download_url(
     os.path.join(BIN_URL, httpd_bin_file),
     os.path.join(CACHE_DIR, httpd_bin_file),
-    config['HTTPD_SHA1'])
+    os.path.join(BP_DIR, "default", "shasums", "%s.sha1" % httpd_bin_file))
 extract_files(CACHE_DIR, httpd_bin_file)
 shutil.move(
     os.path.join(CACHE_DIR, httpd_bin_file[:-7]),
@@ -140,7 +143,7 @@ print 'Configuring PHP Version: %s' % config['PHP_VERSION']
 download_url(
     os.path.join(BIN_URL, php_bin_file),
     os.path.join(CACHE_DIR, php_bin_file),
-    config['PHP_SHA1'])
+    os.path.join(BP_DIR, "default", "shasums", "%s.sha1" % php_bin_file))
 extract_files(CACHE_DIR, php_bin_file)
 php_install_dir = os.path.join(BUILD_DIR, 'php')
 shutil.move(
