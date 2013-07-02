@@ -110,28 +110,36 @@ download_url(
     os.path.join(CACHE_DIR, php_bin_file),
     config['PHP_SHA1'])
 os.system('cd %s; gunzip -c %s | tar xf -' % (CACHE_DIR, php_bin_file))
+php_install_dir = os.path.join(BUILD_DIR, 'php')
 shutil.move(
     os.path.join(CACHE_DIR, php_bin_file[:-7]),
-    os.path.join(BUILD_DIR, 'php'))
+    php_install_dir)
 
 # Setup php.ini
 php_ini_file = os.path.join(BUILD_DIR, 'config', 'php.ini')
+php_ini_install_file = os.path.join(BUILD_DIR, 'php', 'etc', 'php.ini')
 if os.path.exists(php_ini_file):
     print 'Found custom php.ini file, installing.'
     shutil.copy(php_ini_file,
-                os.path.join(BUILD_DIR, 'php', 'etc', 'php.ini'))
+                php_ini_install_file)
 else:
     shutil.copy(os.path.join(default_cfg_dir, 'php.ini'),
-                os.path.join(BUILD_DIR, 'php', 'etc', 'php.ini'))
+                php_ini_install_file)
 
-# Install PECL & PEAR Extensions
-with open(os.path.join(BUILD_DIR, 'php', 'etc', 'pear.conf'), 'r+') as f:
-    pearConf = f.read()
-    pearConf = pearConf.replace('/home/cloud/builds/php-5.4.16-bin/', os.path.join(BUILD_DIR, 'php'))
-    print "Updated pear.conf [%s]" % pearConf
-    f.seek(0)
-    f.write(pearConf)
-os.system('cd %s; ./bin/pecl -R "%s" install mailparse' % (os.path.join(BUILD_DIR, "php"), os.path.join(BUILD_DIR, "php")))
+# Install PECL Extensions
+pecl_mods_file = os.path.join(BUILD_DIR, 'config', 'pecl-mods.txt')
+if os.path.exists(pecl_mods_file):
+    with open(pecl_mods_file, 'rt') as pecl_mods:
+        for mod in pecl_mods:
+            os.system('cd %s; ./bin/pecl install "%s"' % (php_install_dir, mod))
+#TODO: pecl modules require c compilation, grab the installed files some how and cache them
+
+# Install PEAR Modules
+pear_mods_file = os.path.join(BUILD_DIR, 'config', 'pear-mods.txt')
+if os.path.exists(pear_mods_file):
+    with open(pear_mods_file, 'rt') as pear_mods:
+        for mod in pear_mods:
+            os.system('cd %s; ./bin/pear install "%s"' % (php_install_dir, mod))
 
 # Create a startup script
 with open(os.path.join(BUILD_DIR, 'start.sh'), 'wt') as f:
