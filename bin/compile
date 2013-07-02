@@ -148,7 +148,8 @@ pecl_mods_file = os.path.join(BUILD_DIR, 'config', 'pecl-mods.txt')
 if os.path.exists(pecl_mods_file):
     with open(pecl_mods_file, 'rt') as pecl_mods:
         for mod in pecl_mods:
-            print "Installing PECL mod [%s]" % mod
+            mod = mod.strip()
+            print "Installing PECL mod [%s]" % mod.strip()
             os.system('cd %s; ./bin/pecl install "%s"' % (php_install_dir, mod))
 #TODO: pecl modules require c compilation, grab the installed files some how and cache them
 
@@ -157,6 +158,7 @@ pear_mods_file = os.path.join(BUILD_DIR, 'config', 'pear-mods.txt')
 if os.path.exists(pear_mods_file):
     with open(pear_mods_file, 'rt') as pear_mods:
         for mod in pear_mods:
+            mod = mod.strip()
             print "Installing PEAR mod [%s]" % mod
             os.system('cd %s; ./bin/pear install "%s"' % (php_install_dir, mod))
 
