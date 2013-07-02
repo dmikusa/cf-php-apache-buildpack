@@ -47,6 +47,21 @@ def extract_files(inDir, zipFile):
         print "Zip file [%s] does not exist in [%s]" % (zipFile, inDir)
     os.chdir(cwd)
 
+def install_mod(phpDir, modType, modStr):
+    cwd = os.getcwd()
+    os.chdir(phpDir)
+    if modType == "pear" or modType == "pecl":
+        proc = Proc(['./bin/%s' % modType, "install", modStr], stdout=PIPE)
+        output, unused_err = proc.communicate()
+        retcode = proc.poll()
+        if retcode:
+            print "Install [%s, %s] return code [%d]" % (modType, modStr, retcode)
+        if output:
+            print "Output from install [%s]" % output
+    else:
+        print "Invalid modType [%s]" % modType
+    os.chdir(cwd)
+
 # User's application files
 BUILD_DIR = sys.argv[1]
 
@@ -150,7 +165,7 @@ if os.path.exists(pecl_mods_file):
         for mod in pecl_mods:
             mod = mod.strip()
             print "Installing PECL mod [%s]" % mod.strip()
-            os.system('cd %s; ./bin/pecl install "%s"' % (php_install_dir, mod))
+            install_mod(php_install_dir, "pecl", mod)
 #TODO: pecl modules require c compilation, grab the installed files some how and cache them
 
 # Install PEAR Modules
@@ -160,7 +175,7 @@ if os.path.exists(pear_mods_file):
         for mod in pear_mods:
             mod = mod.strip()
             print "Installing PEAR mod [%s]" % mod
-            os.system('cd %s; ./bin/pear install "%s"' % (php_install_dir, mod))
+            install_mod(php_install_dir, "pear", mod)
 
 # Create a startup script
 with open(os.path.join(BUILD_DIR, 'start.sh'), 'wt') as f:
