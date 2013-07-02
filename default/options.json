@@ -2,7 +2,7 @@
     "ADMIN_EMAIL": "admin@localhost",
     "DOWNLOAD_URL": "https://dl.dropboxusercontent.com/u/186123235/binaries",
     "HTTPD_VERSION": "2.2.24",
-    "HTTPD_SHA1": "e1e1bc062eccfab2d2d9dd49b010b8c24f18e4d4",
+    "HTTPD_SHA1": "",
     "PHP_VERSION": "5.4.16",
-    "PHP_SHA1": "d1f75f0bdb8fba4820c1927b0b0fb25e6c794e95"
+    "PHP_SHA1": ""
 }
