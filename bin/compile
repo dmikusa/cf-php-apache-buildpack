@@ -36,7 +36,7 @@ def extract_files(inDir, zipFile):
     cwd = os.getcsd()
     os.chdir(inDir)
     if os.path.exists(zipFile):
-        proc = Popen(stdout=PIPE, "gunzip -c %s | tar xf -" % zipFile, shell=True)
+        proc = Popen("gunzip -c %s | tar xf -" % zipFile, stdout=PIPE, shell=True)
         output, unused_err = proc.communicate()
         retcode = process.poll()
         if retcode:
