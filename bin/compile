@@ -67,8 +67,6 @@ BUILD_DIR = sys.argv[1]
 
 # Cache space for the build pack
 CACHE_DIR = sys.argv[2]
-print "Cache Dir Contents:"
-print "\n".join(os.listdir(CACHE_DIR))
 
 # Temp space
 TMP_DIR = os.environ.get('TMPDIR', '/tmp')
