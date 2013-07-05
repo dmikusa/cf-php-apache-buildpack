@@ -108,18 +108,18 @@ The following steps are used to package Apache HTTPD for the build pack.
 
 1. Remove these extra directories.
 
-```rm -rf build cgi-bin/ error/ icons/ include/ man/ manual/ htdocs/```
+    ```rm -rf build cgi-bin/ error/ icons/ include/ man/ manual/ htdocs/```
 
 2. Remove these configuration files.  The build pack will create them.
 
-```rm -rf conf/extra/* conf/httpd.conf conf/httpd.conf.bak conf/magic conf/original```
+    ```rm -rf conf/extra/* conf/httpd.conf conf/httpd.conf.bak conf/magic conf/original```
 
 3. Edit the following files and replace */tmp/staged/app* with *${HOME}*.
 
-```
-vi apachectl apr-1-config apu-1-config envvars envvars-std
-%s/\/tmp\/staged\/app/${HOME}/g
-```
+    ```
+    vi apachectl apr-1-config apu-1-config envvars envvars-std
+    %s/\/tmp\/staged\/app/${HOME}/g
+    ```
 
 4. Edit *apachectl*, locate the *HTTPD* variable at the top of the script.  Change the surrounding quotes from single quotes to double quotes.
 
@@ -212,7 +212,7 @@ The following steps are used to package PHP for the build pack.
 
 1. Remove these extra directories.
 
-```rm -rf include/ php/```
+    ```rm -rf include/ php/```
 
 2.  Rename the folder */tmp/staged/app/php* to */tmp/staged/app/php-${version}-bin*.
 
