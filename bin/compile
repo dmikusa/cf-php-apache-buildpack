@@ -104,13 +104,16 @@ if __name__ == '__main__':
     # Location of Downloads
     BIN_URL = config['DOWNLOAD_URL']
 
+    # Location of SHA1 files
+    SHA_DIR = os.path.join(BP_DIR, 'default', 'shasums')
+
     # Download HTTPD & Install
     httpd_bin_file = 'httpd-%s-bin.tar.gz' % config['HTTPD_VERSION']
     print 'Configuring HTTPD Version: %s' % config['HTTPD_VERSION']
     download_url(
-        os.path.join(BIN_URL, httpd_bin_file),
+        os.path.join(BIN_URL, 'httpd', httpd_bin_file),
         os.path.join(CACHE_DIR, httpd_bin_file),
-        os.path.join(BP_DIR, "default", "shasums", "%s.sha1" % httpd_bin_file))
+        os.path.join(SHA_DIR, "httpd", "%s.sha1" % httpd_bin_file))
     extract_files(CACHE_DIR, httpd_bin_file)
     shutil.move(
         os.path.join(CACHE_DIR, httpd_bin_file[:-7]),
