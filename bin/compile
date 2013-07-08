@@ -120,7 +120,8 @@ if __name__ == '__main__':
         os.path.join(BUILD_DIR, 'httpd'))
 
     # Install HTTPD Configuration
-    default_cfg_dir = os.path.join(BP_DIR, 'default')
+    default_cfg_dir = os.path.join(BP_DIR, 'default', 'httpd',
+                                   config['HTTPD_VERSION'])
     httpd_cfg_dir = os.path.join(BUILD_DIR, 'httpd', 'conf')
     user_cfg_dir = os.path.join(BUILD_DIR, 'config', 'httpd')
     cfg_files = (
