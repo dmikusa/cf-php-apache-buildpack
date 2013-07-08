@@ -107,6 +107,9 @@ if __name__ == '__main__':
     # Location of SHA1 files
     SHA_DIR = os.path.join(BP_DIR, 'default', 'shasums')
 
+    # Default Configuration Directory
+    DEFAULT_CFG_DIR = os.path.join(BP_DIR, 'default')
+
     # Download HTTPD & Install
     httpd_bin_file = 'httpd-%s-bin.tar.gz' % config['HTTPD_VERSION']
     print 'Configuring HTTPD Version: %s' % config['HTTPD_VERSION']
@@ -120,8 +123,8 @@ if __name__ == '__main__':
         os.path.join(BUILD_DIR, 'httpd'))
 
     # Install HTTPD Configuration
-    default_cfg_dir = os.path.join(BP_DIR, 'default', 'httpd',
-                                   config['HTTPD_VERSION'])
+    default_httpd_cfg_dir = os.path.join(DEFAULT_CFG_DIR, 'httpd',
+                                         config['HTTPD_VERSION'])
     httpd_cfg_dir = os.path.join(BUILD_DIR, 'httpd', 'conf')
     user_cfg_dir = os.path.join(BUILD_DIR, 'config', 'httpd')
     cfg_files = (
@@ -143,7 +146,7 @@ if __name__ == '__main__':
                 os.path.join(httpd_cfg_dir, cfg_file))
         else:
             shutil.copy(
-                os.path.join(default_cfg_dir, cfg_file),
+                os.path.join(default_httpd_cfg_dir, cfg_file),
                 os.path.join(httpd_cfg_dir, cfg_file))
 
     # Download PHP & Install
@@ -160,6 +163,9 @@ if __name__ == '__main__':
         php_install_dir)
 
     # Setup php.ini
+    php_major_version = '.'.join(config['PHP_VERSION'].split('.')[:-1])
+    default_php_cfg_dir = os.path.join(DEFAULT_CFG_DIR, 'php',
+                                       php_major_version)
     php_ini_file = os.path.join(BUILD_DIR, 'config', 'php.ini')
     php_ini_install_file = os.path.join(BUILD_DIR, 'php', 'etc', 'php.ini')
     if os.path.exists(php_ini_file):
@@ -167,7 +173,7 @@ if __name__ == '__main__':
         shutil.copy(php_ini_file,
                     php_ini_install_file)
     else:
-        shutil.copy(os.path.join(default_cfg_dir, 'php.ini'),
+        shutil.copy(os.path.join(default_php_cfg_dir, 'php.ini'),
                     php_ini_install_file)
 
     # Install PEAR Modules
