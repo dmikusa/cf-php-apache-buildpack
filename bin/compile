@@ -150,9 +150,9 @@ if __name__ == '__main__':
     php_bin_file = 'php-%s-bin.tar.gz' % config['PHP_VERSION']
     print 'Configuring PHP Version: %s' % config['PHP_VERSION']
     download_url(
-        os.path.join(BIN_URL, php_bin_file),
+        os.path.join(BIN_URL, 'php', php_bin_file),
         os.path.join(CACHE_DIR, php_bin_file),
-        os.path.join(BP_DIR, "default", "shasums", "%s.sha1" % php_bin_file))
+        os.path.join(SHA_DIR, 'php', "%s.sha1" % php_bin_file))
     extract_files(CACHE_DIR, php_bin_file)
     php_install_dir = os.path.join(BUILD_DIR, 'php')
     shutil.move(
