@@ -8,9 +8,6 @@ import urllib2
 from subprocess import Popen
 from subprocess import PIPE
 
-# Open stdout unbuffered
-sys.stdout = os.fdopen(sys.stdout.fileno(), 'wb', 0)
-
 
 def sha1_matches(shaFile, checkFile):
     cwd = os.getcwd()
@@ -69,119 +66,123 @@ def install_mod(phpDir, modType, modStr):
         print "Invalid modType [%s]" % modType
     os.chdir(cwd)
 
-# User's application files
-BUILD_DIR = sys.argv[1]
+if __name__ == '__main__':
+    # Open stdout unbuffered
+    sys.stdout = os.fdopen(sys.stdout.fileno(), 'wb', 0)
 
-# Cache space for the build pack
-CACHE_DIR = sys.argv[2]
+    # User's application files
+    BUILD_DIR = sys.argv[1]
 
-# Temp space
-TMP_DIR = os.environ.get('TMPDIR', '/tmp')
+    # Cache space for the build pack
+    CACHE_DIR = sys.argv[2]
 
-# Make sure cache & build directories exist
-if not os.path.exists(BUILD_DIR):
-    os.makedirs(BUILD_DIR)
-if not os.path.exists(CACHE_DIR):
-    os.makedirs(CACHE_DIR)
+    # Temp space
+    TMP_DIR = os.environ.get('TMPDIR', '/tmp')
 
-# Build pack location
-BP_DIR = os.path.dirname(os.path.dirname(sys.argv[0]))
+    # Make sure cache & build directories exist
+    if not os.path.exists(BUILD_DIR):
+        os.makedirs(BUILD_DIR)
+    if not os.path.exists(CACHE_DIR):
+        os.makedirs(CACHE_DIR)
 
-# Load configuration options
-default_cfg_file = os.path.join(BP_DIR,
-                                'default',
-                                'options.json')
-default_cfg = json.load(open(default_cfg_file))
-user_config_file = os.path.join(BUILD_DIR, 'config', 'options.json')
-if os.path.exists(user_config_file):
-    print 'Custom config found, overriding default options'
-    user_config = json.load(open(user_config_file))
-    config = dict(default_cfg.items() + user_config.items())
-else:
-    config = default_cfg
+    # Build pack location
+    BP_DIR = os.path.dirname(os.path.dirname(sys.argv[0]))
 
-# Location of Downloads
-BIN_URL = config['DOWNLOAD_URL']
-
-# Download HTTPD & Install
-httpd_bin_file = 'httpd-%s-bin.tar.gz' % config['HTTPD_VERSION']
-print 'Configuring HTTPD Version: %s' % config['HTTPD_VERSION']
-download_url(
-    os.path.join(BIN_URL, httpd_bin_file),
-    os.path.join(CACHE_DIR, httpd_bin_file),
-    os.path.join(BP_DIR, "default", "shasums", "%s.sha1" % httpd_bin_file))
-extract_files(CACHE_DIR, httpd_bin_file)
-shutil.move(
-    os.path.join(CACHE_DIR, httpd_bin_file[:-7]),
-    os.path.join(BUILD_DIR, 'httpd'))
-
-# Install HTTPD Configuration
-default_cfg_dir = os.path.join(BP_DIR, 'default')
-httpd_cfg_dir = os.path.join(BUILD_DIR, 'httpd', 'conf')
-user_cfg_dir = os.path.join(BUILD_DIR, 'config', 'httpd')
-cfg_files = (
-    'httpd.conf',
-    os.path.join('extra', 'httpd-default.conf'),
-    os.path.join('extra', 'httpd-directories.conf'),
-    os.path.join('extra', 'httpd-logging.conf'),
-    os.path.join('extra', 'httpd-mime.conf'),
-    os.path.join('extra', 'httpd-modules.conf'),
-    os.path.join('extra', 'httpd-mpm.conf'),
-    os.path.join('extra', 'httpd-php.conf')
-)
-for cfg_file in cfg_files:
-    if os.path.exists(os.path.join(user_cfg_dir, cfg_file)) \
-            and cfg_file != "httpd.conf":
-        print 'Found custom %s file, installing.' % cfg_file
-        shutil.copy(
-            os.path.join(user_cfg_dir, cfg_file),
-            os.path.join(httpd_cfg_dir, cfg_file))
+    # Load configuration options
+    default_cfg_file = os.path.join(BP_DIR,
+                                    'default',
+                                    'options.json')
+    default_cfg = json.load(open(default_cfg_file))
+    user_config_file = os.path.join(BUILD_DIR, 'config', 'options.json')
+    if os.path.exists(user_config_file):
+        print 'Custom config found, overriding default options'
+        user_config = json.load(open(user_config_file))
+        config = dict(default_cfg.items() + user_config.items())
     else:
-        shutil.copy(
-            os.path.join(default_cfg_dir, cfg_file),
-            os.path.join(httpd_cfg_dir, cfg_file))
+        config = default_cfg
 
-# Download PHP & Install
-php_bin_file = 'php-%s-bin.tar.gz' % config['PHP_VERSION']
-print 'Configuring PHP Version: %s' % config['PHP_VERSION']
-download_url(
-    os.path.join(BIN_URL, php_bin_file),
-    os.path.join(CACHE_DIR, php_bin_file),
-    os.path.join(BP_DIR, "default", "shasums", "%s.sha1" % php_bin_file))
-extract_files(CACHE_DIR, php_bin_file)
-php_install_dir = os.path.join(BUILD_DIR, 'php')
-shutil.move(
-    os.path.join(CACHE_DIR, php_bin_file[:-7]),
-    php_install_dir)
+    # Location of Downloads
+    BIN_URL = config['DOWNLOAD_URL']
 
-# Setup php.ini
-php_ini_file = os.path.join(BUILD_DIR, 'config', 'php.ini')
-php_ini_install_file = os.path.join(BUILD_DIR, 'php', 'etc', 'php.ini')
-if os.path.exists(php_ini_file):
-    print 'Found custom php.ini file, installing.'
-    shutil.copy(php_ini_file,
-                php_ini_install_file)
-else:
-    shutil.copy(os.path.join(default_cfg_dir, 'php.ini'),
-                php_ini_install_file)
+    # Download HTTPD & Install
+    httpd_bin_file = 'httpd-%s-bin.tar.gz' % config['HTTPD_VERSION']
+    print 'Configuring HTTPD Version: %s' % config['HTTPD_VERSION']
+    download_url(
+        os.path.join(BIN_URL, httpd_bin_file),
+        os.path.join(CACHE_DIR, httpd_bin_file),
+        os.path.join(BP_DIR, "default", "shasums", "%s.sha1" % httpd_bin_file))
+    extract_files(CACHE_DIR, httpd_bin_file)
+    shutil.move(
+        os.path.join(CACHE_DIR, httpd_bin_file[:-7]),
+        os.path.join(BUILD_DIR, 'httpd'))
 
-# Install PEAR Modules
-pear_mods_file = os.path.join(BUILD_DIR, 'config', 'pear-mods.txt')
-if os.path.exists(pear_mods_file):
-    with open(pear_mods_file, 'rt') as pear_mods:
-        for mod in pear_mods:
-            mod = mod.strip()
-            print "Installing PEAR mod [%s]" % mod
-            install_mod(php_install_dir, "pear", mod)
+    # Install HTTPD Configuration
+    default_cfg_dir = os.path.join(BP_DIR, 'default')
+    httpd_cfg_dir = os.path.join(BUILD_DIR, 'httpd', 'conf')
+    user_cfg_dir = os.path.join(BUILD_DIR, 'config', 'httpd')
+    cfg_files = (
+        'httpd.conf',
+        os.path.join('extra', 'httpd-default.conf'),
+        os.path.join('extra', 'httpd-directories.conf'),
+        os.path.join('extra', 'httpd-logging.conf'),
+        os.path.join('extra', 'httpd-mime.conf'),
+        os.path.join('extra', 'httpd-modules.conf'),
+        os.path.join('extra', 'httpd-mpm.conf'),
+        os.path.join('extra', 'httpd-php.conf')
+    )
+    for cfg_file in cfg_files:
+        if os.path.exists(os.path.join(user_cfg_dir, cfg_file)) \
+                and cfg_file != "httpd.conf":
+            print 'Found custom %s file, installing.' % cfg_file
+            shutil.copy(
+                os.path.join(user_cfg_dir, cfg_file),
+                os.path.join(httpd_cfg_dir, cfg_file))
+        else:
+            shutil.copy(
+                os.path.join(default_cfg_dir, cfg_file),
+                os.path.join(httpd_cfg_dir, cfg_file))
 
-# Create a startup script
-with open(os.path.join(BUILD_DIR, 'start.sh'), 'wt') as f:
-    f.write('#!/usr/bin/env bash\n')
-    f.write('export HTTPD_SERVER_ADMIN="%s"\n' % config['ADMIN_EMAIL'])
-    f.write('%s -f %s -k start\n' % (
-        os.path.join("$HOME", 'httpd', 'bin', 'apachectl'),
-        os.path.join("$HOME", 'httpd', 'conf', 'httpd.conf')))
-    f.write('while [ 1 -eq 1 ]; do\n')
-    f.write('    sleep 100000\n')
-    f.write('done\n')
-os.chmod(os.path.join(BUILD_DIR, 'start.sh'), 0755)
+    # Download PHP & Install
+    php_bin_file = 'php-%s-bin.tar.gz' % config['PHP_VERSION']
+    print 'Configuring PHP Version: %s' % config['PHP_VERSION']
+    download_url(
+        os.path.join(BIN_URL, php_bin_file),
+        os.path.join(CACHE_DIR, php_bin_file),
+        os.path.join(BP_DIR, "default", "shasums", "%s.sha1" % php_bin_file))
+    extract_files(CACHE_DIR, php_bin_file)
+    php_install_dir = os.path.join(BUILD_DIR, 'php')
+    shutil.move(
+        os.path.join(CACHE_DIR, php_bin_file[:-7]),
+        php_install_dir)
+
+    # Setup php.ini
+    php_ini_file = os.path.join(BUILD_DIR, 'config', 'php.ini')
+    php_ini_install_file = os.path.join(BUILD_DIR, 'php', 'etc', 'php.ini')
+    if os.path.exists(php_ini_file):
+        print 'Found custom php.ini file, installing.'
+        shutil.copy(php_ini_file,
+                    php_ini_install_file)
+    else:
+        shutil.copy(os.path.join(default_cfg_dir, 'php.ini'),
+                    php_ini_install_file)
+
+    # Install PEAR Modules
+    pear_mods_file = os.path.join(BUILD_DIR, 'config', 'pear-mods.txt')
+    if os.path.exists(pear_mods_file):
+        with open(pear_mods_file, 'rt') as pear_mods:
+            for mod in pear_mods:
+                mod = mod.strip()
+                print "Installing PEAR mod [%s]" % mod
+                install_mod(php_install_dir, "pear", mod)
+
+    # Create a startup script
+    with open(os.path.join(BUILD_DIR, 'start.sh'), 'wt') as f:
+        f.write('#!/usr/bin/env bash\n')
+        f.write('export HTTPD_SERVER_ADMIN="%s"\n' % config['ADMIN_EMAIL'])
+        f.write('%s -f %s -k start\n' % (
+            os.path.join("$HOME", 'httpd', 'bin', 'apachectl'),
+            os.path.join("$HOME", 'httpd', 'conf', 'httpd.conf')))
+        f.write('while [ 1 -eq 1 ]; do\n')
+        f.write('    sleep 100000\n')
+        f.write('done\n')
+    os.chmod(os.path.join(BUILD_DIR, 'start.sh'), 0755)
