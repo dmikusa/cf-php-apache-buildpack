@@ -178,6 +178,18 @@ if __name__ == '__main__':
         shutil.copy(os.path.join(default_php_cfg_dir, 'php.ini'),
                     php_ini_install_file)
 
+    # Setup php-fpm.conf
+    php_fpm_cnf_file = os.path.join(BUILD_DIR, 'config', 'php-fpm.conf')
+    php_fpm_cnf_install_file = os.path.join(BUILD_DIR, 
+                                            'php', 'etc', 'php-fpm.conf')
+    if os.path.exists(php_fpm_cnf_file):
+        print 'Found custom php-fpm.conf file, installing.'
+        shutil.copy(php_fpm_cnf_file,
+                    php_fpm_cnf_install_file)
+    else:
+        shutil.copy(os.path.join(default_php_cfg_dir, 'php-fpm.conf'),
+                    php_fpm_conf_install_file)
+
     # Install PEAR Modules
     pear_mods_file = os.path.join(BUILD_DIR, 'config', 'pear-mods.txt')
     if os.path.exists(pear_mods_file):
@@ -190,6 +202,10 @@ if __name__ == '__main__':
     # Create a startup script
     with open(os.path.join(BUILD_DIR, 'start.sh'), 'wt') as f:
         f.write('#!/usr/bin/env bash\n')
+        f.write('%s -p "%s" -y "%s" -c "%s"' % 
+            os.path.join("$HOME", "php"),
+            os.path.join("$HOME", "php", "etc", "php-fpm.conf"),
+            os.path.join("$HOME", "php", "etc", "php.ini"))
         f.write('export HTTPD_SERVER_ADMIN="%s"\n' % config['ADMIN_EMAIL'])
         f.write('%s -f %s -k start\n' % (
             os.path.join("$HOME", 'httpd', 'bin', 'apachectl'),
