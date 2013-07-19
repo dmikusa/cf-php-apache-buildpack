@@ -112,12 +112,13 @@ if __name__ == '__main__':
     DEFAULT_CFG_DIR = os.path.join(BP_DIR, 'default')
 
     # Download HTTPD & Install
+    httpd_major_version = '.'.join(config['HTTPD_VERSION'].split('.')[:-1])
     httpd_bin_file = 'httpd-%s-bin.tar.gz' % config['HTTPD_VERSION']
     print 'Configuring HTTPD Version: %s' % config['HTTPD_VERSION']
     download_url(
-        os.path.join(BIN_URL, 'httpd', httpd_bin_file),
+        os.path.join(BIN_URL, 'httpd', httpd_major_version, httpd_bin_file),
         os.path.join(CACHE_DIR, httpd_bin_file),
-        os.path.join(SHA_DIR, "httpd", "%s.sha1" % httpd_bin_file))
+        os.path.join(SHA_DIR, "httpd", httpd_major_version, "%s.sha1" % httpd_bin_file))
     extract_files(CACHE_DIR, httpd_bin_file)
     shutil.move(
         os.path.join(CACHE_DIR, httpd_bin_file[:-7]),
@@ -125,7 +126,7 @@ if __name__ == '__main__':
 
     # Install HTTPD Configuration
     default_httpd_cfg_dir = os.path.join(DEFAULT_CFG_DIR, 'httpd',
-                                         config['HTTPD_VERSION'])
+                                         httpd_major_version)
     httpd_cfg_dir = os.path.join(BUILD_DIR, 'httpd', 'conf')
     user_cfg_dir = os.path.join(BUILD_DIR, 'config', 'httpd')
     cfg_files = (
