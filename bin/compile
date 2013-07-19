@@ -24,6 +24,7 @@ def sha1_matches(shaFile, checkFile):
 def download_url(url, toFile, sha1):
     """Download a url to a file"""
     if not os.path.exists(toFile) or not sha1_matches(sha1, toFile):
+        print 'Downloading [%s]' % url
         res = urllib2.urlopen(url)
         with open(toFile, 'w') as f:
             f.write(res.read())
