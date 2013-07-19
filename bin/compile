@@ -203,6 +203,7 @@ if __name__ == '__main__':
     with open(os.path.join(BUILD_DIR, 'start.sh'), 'wt') as f:
         f.write('#!/usr/bin/env bash\n')
         if httpd_major_version == '2.4':
+            f.write("export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/php/lib\n")
             f.write('%s -p "%s" -y "%s"\n' % (
                 os.path.join("$HOME", "php", "sbin", "php-fpm"),
                 os.path.join("$HOME", "php", "etc"),
