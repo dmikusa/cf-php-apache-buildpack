@@ -151,12 +151,13 @@ if __name__ == '__main__':
                 os.path.join(httpd_cfg_dir, cfg_file))
 
     # Download PHP & Install
+    php_major_version = '.'.join(config['PHP_VERSION'].split('.')[:-1])
     php_bin_file = 'php-%s-bin.tar.gz' % config['PHP_VERSION']
     print 'Configuring PHP Version: %s' % config['PHP_VERSION']
     download_url(
-        os.path.join(BIN_URL, 'php', php_bin_file),
+        os.path.join(BIN_URL, 'php', php_major_version, php_bin_file),
         os.path.join(CACHE_DIR, php_bin_file),
-        os.path.join(SHA_DIR, 'php', "%s.sha1" % php_bin_file))
+        os.path.join(SHA_DIR, 'php', php_major_version, "%s.sha1" % php_bin_file))
     extract_files(CACHE_DIR, php_bin_file)
     php_install_dir = os.path.join(BUILD_DIR, 'php')
     shutil.move(
@@ -164,7 +165,6 @@ if __name__ == '__main__':
         php_install_dir)
 
     # Setup php.ini
-    php_major_version = '.'.join(config['PHP_VERSION'].split('.')[:-1])
     default_php_cfg_dir = os.path.join(DEFAULT_CFG_DIR, 'php',
                                        php_major_version)
     php_ini_file = os.path.join(BUILD_DIR, 'config', 'php.ini')
