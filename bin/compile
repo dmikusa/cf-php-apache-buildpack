@@ -188,7 +188,7 @@ if __name__ == '__main__':
                     php_fpm_cnf_install_file)
     else:
         shutil.copy(os.path.join(default_php_cfg_dir, 'php-fpm.conf'),
-                    php_fpm_conf_install_file)
+                    php_fpm_cnf_install_file)
 
     # Install PEAR Modules
     pear_mods_file = os.path.join(BUILD_DIR, 'config', 'pear-mods.txt')
