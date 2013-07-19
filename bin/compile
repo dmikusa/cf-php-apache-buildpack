@@ -202,11 +202,12 @@ if __name__ == '__main__':
     # Create a startup script
     with open(os.path.join(BUILD_DIR, 'start.sh'), 'wt') as f:
         f.write('#!/usr/bin/env bash\n')
-        f.write('%s -p "%s" -y "%s" -c "%s"' % (
-            os.path.join("$HOME", "php", "sbin", "php-fpm"),
-            os.path.join("$HOME", "php"),
-            os.path.join("$HOME", "php", "etc", "php-fpm.conf"),
-            os.path.join("$HOME", "php", "etc", "php.ini")))
+        if httpd_major_version == '2.4':
+            f.write('%s -p "%s" -y "%s" -c "%s"' % (
+                os.path.join("$HOME", "php", "sbin", "php-fpm"),
+                os.path.join("$HOME", "php"),
+                os.path.join("$HOME", "php", "etc", "php-fpm.conf"),
+                os.path.join("$HOME", "php", "etc", "php.ini")))
         f.write('export HTTPD_SERVER_ADMIN="%s"\n' % config['ADMIN_EMAIL'])
         f.write('%s -f %s -k start\n' % (
             os.path.join("$HOME", 'httpd', 'bin', 'apachectl'),
