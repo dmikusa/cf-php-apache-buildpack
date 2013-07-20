@@ -4,7 +4,6 @@ Things to do...
 1. Possibly add support for other servers
     - lighttpd
     - nginx
-2. Use mod_proxy & mod_proxy_fcgid with HTTPD 2.4.x
 
 Bugs
 ----
