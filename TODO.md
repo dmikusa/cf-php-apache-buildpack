@@ -5,6 +5,11 @@ Things to do...
     - lighttpd
     - nginx
 
+2. Status monitoring for:
+   - php-fpm
+   - HTTPD
+   - mod_fcgid
+
 Bugs
 ----
 
