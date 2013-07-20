@@ -38,6 +38,11 @@ As the file extension indicates, the file should be valid JSON.
 This allows you to override the *php.ini* file that is used by your application.  The default php.ini file is a minimal example and does not include any of the additional extensions.  If you include a custom *php.ini* file it will completely override the default one used by the build pack.  Because of this, it is recommended that you start with the file from the build pack for your version and customize it:  [5.3](https://github.com/dmikusa-pivotal/cf-php-apache-buildpack/blob/master/default/php/5.3/php.ini), [5.4](https://github.com/dmikusa-pivotal/cf-php-apache-buildpack/blob/master/default/php/5.4/php.ini), [5.5](https://github.com/dmikusa-pivotal/cf-php-apache-buildpack/blob/master/default/php/5.5/php.ini). 
 
 
+#### php-fpm.conf
+
+This allows you to override the *php-fpm.conf* file that is used by the HTTPD 2.4 configuration.  The default php-fpm.conf file and it should be good for most situations.  If your application is large, you'll likely want to configure this file to adjust the number of applications in the worker pool.  If you include a custom *php-fpm.conf* file it will completely override the default one used by the build pack.  Because of this, it is recommended that you start with the file from the build pack for your version and customize it:  [5.3](https://github.com/dmikusa-pivotal/cf-php-apache-buildpack/blob/master/default/php/5.3/php-fpm.conf), [5.4](https://github.com/dmikusa-pivotal/cf-php-apache-buildpack/blob/master/default/php/5.4/php-fpm.conf), [5.5](https://github.com/dmikusa-pivotal/cf-php-apache-buildpack/blob/master/default/php/5.5/php-fpm.conf).
+
+
 #### httpd directory
   
 The configuration that is used by the build pack for HTTPD is broken down into multiple files.  Each file allows you to configure a specific part of HTTPD.  Your application can include one or more of the configuration files in the *config/httpd* directory and those files will override the defaults used by the build pack.
