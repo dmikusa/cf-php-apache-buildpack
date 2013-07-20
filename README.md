@@ -1,7 +1,7 @@
 CloudFoundry PHP &amp; Apache HTTPD Buildpack
 =============================================
 
-This project is a build pack for deploying PHP applications to CloudFoundry.  It deploys and automatically configures Apache HTTPD and mod_fcgid to host your PHP applications.
+This project is a build pack for deploying PHP applications to CloudFoundry.  It deploys and automatically configures Apache HTTPD and PHP (HTTPD 2.2 uses mod_fcgid and HTTPD 2.4 uses mod_proxy_fcgi) to host your applications.
 
 
 Instructions
@@ -10,8 +10,8 @@ Instructions
 The build pack has some conventions for the format of your application.  It expects a folder structure like this.
 
   - htdocs -> your application files & static resources
-  - config -> PHP and HTTPD specific configuration settings
-  - lib    -> PHP libraries used by your application (directory is on the include_path)
+  - config -> PHP and HTTPD specific configuration settings (optional)
+  - lib    -> PHP libraries and files used by your application (directory is on the include_path), these files are not publically visible.
   
 There is no further structure for the *htdocs* and *lib* directories.  You can set them up however you wish.  
 
@@ -78,147 +78,5 @@ Here are some helpful hints when things go wrong.
 Builds
 ------
 
-The build pack makes use of binary versions of Apache HTTPD and PHP.  These are unmodified versions of the software that are downloaded into the environment in a binary form so that they do not have to be compiled prior to being used.  In the event that you'd like to compile your own versions of the software, the following instructions show how to do that.
-
-###Environment
-
-The environment used to compile the files was a fully up-to-date Ubuntu 10.04.4 LTS system.  The easiest way to get all of the build tools is to install the build-essential and autoconf packages.  Beyond that, you'll need libraries and dev packages for things like MySQL, PostgresSQL, aspell, mcrypt, libc-client, gettext, openssl, gdb, bz2 and anything else that you want to compile support for into PHP.
-
-###Apache Build
-
-Use the typical installation instructions for building Apache HTTPD.  When you run the "./configure" step, use the following options.
-
-```
-./configure --prefix=/tmp/staged/app/httpd --enable-mods-shared=all --enable-so --with-mpm=worker
-```
-
-####mod_fcgid
-
-In addition to building Apache HTTPD, you need to build mod_fcgid.  This is done with the following command.
-
-```
-APXS=/tmp/staged/app/httpd/bin/apxs ./configure.apxs && make && make install
-```
-
-After this completes, the mod_fcgid.so file should be located at */tmp/staged/app/httpd/modules/mod_fcgid.so*.
-
-####Packaging
-
-The following steps are used to package Apache HTTPD for the build pack.
-
-1. Remove these extra directories.
-
-    ```rm -rf build cgi-bin/ error/ icons/ include/ man/ manual/ htdocs/```
-
-2. Remove these configuration files.  The build pack will create them.
-
-    ```rm -rf conf/extra/* conf/httpd.conf conf/httpd.conf.bak conf/magic conf/original```
-
-3. Edit the following files and replace */tmp/staged/app* with *${HOME}*.
-
-    ```
-    vi apachectl apr-1-config apu-1-config envvars envvars-std
-    %s/\/tmp\/staged\/app/${HOME}/g
-    ```
-
-4. Edit *apachectl*, locate the *HTTPD* variable at the top of the script.  Change the surrounding quotes from single quotes to double quotes.
-
-5. Rename the folder */tmp/staged/app/httpd* to */tmp/staged/app/httpd-${version}-bin*.
-
-6. Tar and gzip the file.  ```tar czf httpd-${version}-bin.tar.gz httpd-${version}-bin```
-
-###PHP Build
-
-The PHP build is a bit more complicated as it depends on quite a few things.  The default build provided with this build pack tries to include all of the modules that you would need to connect to the services available on CloudFoundry.  This includes MySQL, PostgreSQL, Redis, Mongo and RabbitMQ.  Here are the instructions used to 
-
-Use the typical installation instructions for building PHP.  When you run the "./configure" step, use the following options. Note, these are for bulding PHP 5.4.x.  The options will likely differ with different releases.
-
-```
-./configure
-    --prefix=/tmp/staged/app/php
-    --with-config-file-path=/home/vcap/app/php/etc
-    --enable-cli
-    --enable-ftp
-    --enable-sockets
-    --enable-soap
-    --enable-fileinfo
-    --enable-bcmath
-    --enable-calendar
-    --with-kerberos
-    --enable-zip
-    --enable-pear
-    --with-bz2=shared
-    --with-curl=shared
-    --enable-dba=shared
-    --with-inifile
-    --with-flatfile
-    --with-cdb
-    --with-gdbm
-    --with-mcrypt=shared
-    --with-mhash=shared
-    --with-mysql=mysqlnd
-    --with-mysqli=mysqlnd
-    --with-pdo-mysql=mysqlnd
-    --with-gd=shared
-    --with-pdo-pgsql=shared
-    --with-pgsql=shared
-    --with-pspell=shared
-    --with-gettext=shared
-    --with-gmp=shared
-    --with-imap=shared
-    --with-imap-ssl=shared
-    --with-ldap=shared
-    --with-ldap-sasl
-    --enable-mbstring
-    --enable-mbregex
-    --with-exif=shared
-    --with-openssl=shared
-```
-
-####Additional Require Libraries
-
-Some of the extensions that are built into PHP require additional shared libraries.  These should be copied to the */tmp/staged/app/php/lib* directory, which is added to the LD_LIBRARY_PATH by the build pack.
-
- - libaspell.so.15
- - libc-client.so.2007e
- - libmcrypt.so.4
- - libpspell.so.15
- - librabbitmq.so.1
-
-####Build External Extensions
-
-Some of the bundled extensions are not part of the standard PHP distribution.  These need to be downloaded and installed separately.  These include the following.
-
- - apc
- - amqp
- - mongo
- - redis
- - xdebug
-
-Follow the standard build and install instructions for these extensions. 
-
-```
-cd <mod-folder>
-/tmp/staged/app/php/bin/phpize
-./configure --with-php-config=/tmp/staged/app/bin/php-config <other required opts>
-make && make install
-```
-
-After *make install* completes the extension will exist in */tmp/staged/app/php/lib/php/extensions/no-debug-non-zts-20100525*.
-
-####Packaging
-
-The following steps are used to package PHP for the build pack.
-
-1. Remove these extra directories.
-
-    ```rm -rf include/ php/```
-
-2.  Rename the folder */tmp/staged/app/php* to */tmp/staged/app/php-${version}-bin*.
-
-3. Tar and gzip the file.  ```tar czf php-${version}-bin.tar.gz php-${version}-bin```
-
-###Distribution
-
-Distribution of your builds is simple.  Place them on a web server so that they are public.  From there edit *options.json* and set the *DOWNLOAD_URL* option to point to the directory on your web server.  As long as you have followed the packaging instructions above, the build pack should be able to consume your binaries.
+The build pack makes use of binary versions of Apache HTTPD and PHP.  These are unmodified versions of the software that are downloaded into the environment in a binary form so that they do not have to be compiled prior to being used.  In the event that you'd like to compile your own versions of the software, check out this repo which has some helper scripts and instructions for building your own binaries.
 
