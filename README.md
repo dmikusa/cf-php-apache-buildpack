@@ -85,3 +85,6 @@ Builds
 
 The build pack makes use of binary versions of Apache HTTPD and PHP.  These are unmodified versions of the software that are downloaded into the environment in a binary form so that they do not have to be compiled prior to being used.  In the event that you'd like to compile your own versions of the software, check out this repo which has some helper scripts and instructions for building your own binaries.
 
+## License
+The CloudFoundry PHP Build Pack is released under version 2.0 of the [Apache License](http://www.apache.org/licenses/LICENSE-2.0).
+
