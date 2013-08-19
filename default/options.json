@@ -2,5 +2,5 @@
     "ADMIN_EMAIL": "admin@localhost",
     "DOWNLOAD_URL": "https://dl.dropboxusercontent.com/u/186123235/binaries",
     "HTTPD_VERSION": "2.2.25",
-    "PHP_VERSION": "5.4.17"
+    "PHP_VERSION": "5.4.18"
 }
