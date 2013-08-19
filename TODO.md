@@ -10,6 +10,8 @@ Things to do...
    - HTTPD
    - mod_fcgid
 
+3. Automatically enable PHP modules, if specific services are bound to the application.  Ex:  If a mysql database is attached, enable MySQL.
+
 Bugs
 ----
 
