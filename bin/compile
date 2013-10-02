@@ -215,6 +215,36 @@ if __name__ == '__main__':
                 print "Installing PEAR mod [%s]" % mod
                 install_mod(php_install_dir, "pear", mod)
 
+    # Install New Relic
+    nr_install_key=os.environ.get('NR_INSTALL_KEY')
+    if nr_install_key:
+        print 'Configuring New Relic PHP agent'
+        newrelic_url = config['NEWRELIC_DOWNLOAD_URL']
+        newrelic_base_name = 'newrelic-php5-%s-linux' % config['NEWRELIC_VERSION']
+        newrelic_bin_file = '%s.tar.gz' % newrelic_base_name
+        download_url(
+            os.path.join(newrelic_url, newrelic_bin_file),
+            os.path.join(CACHE_DIR, newrelic_bin_file),
+            os.path.join(SHA_DIR, 'newrelic', "%s.sha1" % newrelic_bin_file))
+        extract_files(CACHE_DIR, newrelic_bin_file)
+        # Run New Relic install against PHP install dir
+        proc = Popen("%s/newrelic-install install" % newrelic_base_name,
+                     stdout=PIPE, shell=True,
+                     env={
+                     'NR_INSTALL_PHPLIST': php_install_dir, 
+                     'NR_INSTALL_SILENT': 'true',
+                     'NR_INSTALL_KEY': nr_install_key})
+        output, unused_err = proc.communicate()
+        retcode = proc.poll()
+        if retcode:
+            print "Installing New Relic failed with return code [%d]" \
+                % retcode
+        if output:
+            print "Output from New Relic install [%s]" % output
+    else:
+        print 'Skiping New Relic PHP agent install as the ',
+            'NR_INSTALL_KEY environment varible was not defined'
+
     # Create a startup script
     with open(os.path.join(BUILD_DIR, 'start.sh'), 'wt') as f:
         f.write('#!/usr/bin/env bash\n')
