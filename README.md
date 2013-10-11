@@ -71,6 +71,29 @@ Ex:
    cf push --buildpack=https://github.com/dmikusa-pivotal/cf-php-apache-buildpack.git
 ```
 
+New Relic
+---------
+
+This build pack can install the New Relic plugin for PHP to monitor your application with the New Relic SaaS application monitoring tool. 
+
+To install it, simply specify your New Relic license key as an environment variable in your manifest.yml file like so:
+
+```
+   --- 
+   applications: 
+   - buildpack: https://github.com/cdelashmutt-pivotal/cf-php-apache-buildpack
+     path: .
+     instances: 1
+     memory: 256M
+     name: myapp
+     host: myapp-${random-word}
+     domain: cfapps.io
+     env:
+       NR_INSTALL_KEY: <put your license key here>
+```
+
+Then simply push your application as normal, and the build pack will enable New Relic support for you.
+
 Troubleshooting
 ---------------
 
