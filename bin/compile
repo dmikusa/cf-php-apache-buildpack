@@ -205,22 +205,6 @@ if __name__ == '__main__':
     else:
         shutil.copy(os.path.join(default_php_cfg_dir, 'php.ini'),
                     php_ini_install_file)
-        # Smack New Relic license and app name to the end if needed
-        if newrelic_install_key:
-            vcap_application = json.loads(os.environ.get('VCAP_APPLICATION'))
-            with open(php_ini_install_file, 'a') as file:
-                file.write('extension=newrelic.so\n')
-        file.write('[newrelic]\n')
-        file.write('newrelic.license=%s\n' % newrelic_install_key)
-        file.write('newrelic.appname=%s\n' % vcap_application['name'])
-        file.write('newrelic.daemon.logfile=%s\n' %
-                   os.path.join('${HOME}', '..', 'logs', 'newrelic-daemon.log'))
-        file.write('newrelic.daemon.location=%s\n' %
-                   os.path.join('${HOME}', newrelic_daemon_folder, newrelic_daemon_name))
-        file.write('newrelic.daemon.port=%s\n' %
-                   os.path.join('${TMPDIR}', '.newrelic.sock'))
-        file.write('newrelic.daemon.pidfile=%s\n' %
-                   os.path.join('${TMPDIR}', 'newrelic.pid'))
 
     # Setup php-fpm.conf
     php_fpm_cnf_file = os.path.join(BUILD_DIR, 'config', 'php-fpm.conf')
@@ -273,17 +257,32 @@ if __name__ == '__main__':
                                    newrelic_arch,
                                    'newrelic-%s%s.so' % (php_api, php_zts))
         newrelic_so_dest = os.path.join(php_module_dir, 'newrelic.so')
-        print('Copying New Relic library from %s to %s' % (newrelic_so, newrelic_so_dest))
+        print 'Copying New Relic library from %s to %s' % (newrelic_so, newrelic_so_dest)
         shutil.copy(newrelic_so, newrelic_so_dest)
         newrelic_daemon_source = os.path.join(newrelic_extracted_dir, 'daemon', 'newrelic-daemon.x64')
         newrelic_daemon_dir = os.path.join(BUILD_DIR, newrelic_daemon_folder)
         newrelic_daemon_dest = os.path.join(newrelic_daemon_dir, newrelic_daemon_name)
-        print('Copying New Relic daemon to %s' % newrelic_daemon_dest)
+        print 'Copying New Relic daemon to %s' % newrelic_daemon_dest
         os.makedirs(newrelic_daemon_dir)
         shutil.copy(newrelic_daemon_source, newrelic_daemon_dest)
+        # Configure New Relic
+        vcap_application = json.loads(os.environ.get('VCAP_APPLICATION'))
+        with open(php_ini_install_file, 'a') as file:
+            file.write('extension=newrelic.so\n')
+            file.write('[newrelic]\n')
+            file.write('newrelic.license=%s\n' % newrelic_install_key)
+            file.write('newrelic.appname=%s\n' % vcap_application['name'])
+            file.write('newrelic.daemon.logfile=%s\n' %
+                       os.path.join('${HOME}', '..', 'logs', 'newrelic-daemon.log'))
+            file.write('newrelic.daemon.location=%s\n' %
+                       os.path.join('${HOME}', newrelic_daemon_folder, newrelic_daemon_name))
+            file.write('newrelic.daemon.port=%s\n' %
+                       os.path.join('${TMPDIR}', '.newrelic.sock'))
+            file.write('newrelic.daemon.pidfile=%s\n' %
+                       os.path.join('${TMPDIR}', 'newrelic.pid'))
     else:
-        print('Skiping New Relic PHP agent install as the ',
-              'NR_INSTALL_KEY environment varible was not defined')
+        print 'Skiping New Relic PHP agent install as the ' \
+              'NR_INSTALL_KEY environment varible was not defined'
 
     # Create a startup script
     with open(os.path.join(BUILD_DIR, 'start.sh'), 'wt') as f:
