@@ -95,7 +95,7 @@ def extract_php_info(phpInfoOuput, reStr):
 
 def newrelic_needs_configured(php_ini_install_file):
     with open(php_ini_install_file, 'rt') as phpIni:
-        for line in phpIni.readline():
+        for line in phpIni:
             if line.find('newrelic') >= 0:
                 return False
     return True
@@ -203,9 +203,6 @@ if __name__ == '__main__':
                                        php_major_version)
     php_ini_file = os.path.join(BUILD_DIR, 'config', 'php.ini')
     php_ini_install_file = os.path.join(BUILD_DIR, 'php', 'etc', 'php.ini')
-    newrelic_install_key = os.environ.get('NR_INSTALL_KEY')
-    newrelic_daemon_folder = 'newrelic'
-    newrelic_daemon_name = 'newrelic-daemon'
     if os.path.exists(php_ini_file):
         print 'Found custom php.ini file, installing.'
         shutil.copy(php_ini_file,
@@ -236,8 +233,11 @@ if __name__ == '__main__':
                 install_mod(php_install_dir, "pear", mod)
 
     # Install New Relic
+    newrelic_install_key = config.get('NR_INSTALL_KEY', None)
     if newrelic_install_key:
         print 'Configuring New Relic PHP agent'
+        newrelic_daemon_folder = 'newrelic'
+        newrelic_daemon_name = 'newrelic-daemon'
         newrelic_url = config['NEWRELIC_DOWNLOAD_URL']
         newrelic_version = config['NEWRELIC_VERSION']
         newrelic_base_name = 'newrelic-php5-%s-linux' % newrelic_version
