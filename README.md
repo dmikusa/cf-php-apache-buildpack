@@ -18,17 +18,22 @@ There is no further structure for the *htdocs* and *lib* directories.  You can s
 
 ### Configuration
 
-The build pack comes with sane defaults for small to medium sized applications.  Ideally you won't need to adjust these setting much if at all.  If you'd like to customize things further, you have the following options.
+The build pack comes with sane defaults for small to medium sized applications.  Ideally you won't need to adjust these setting much if at all.  However you can do so by creating a ```config``` directory in your application folder.  This folder can contain configuration settings that will override the defaults provided by the build pack.  
+
+If you'd like to customize things further, you have the following options.
 
 
 #### options.json
 
-In the *config/options.json* file, you have the following options:
+In your application, create the file *config/options.json* file, you have the following options:
 
-  - ADMIN_EMAIL   -> the administrator email defined in HTTPD (default admin@localhost)
-  - DOWNLOAD_URL  -> the URL from where to download the PHP & HTTPD binaries
-  - HTTPD_VERSION -> the version of HTTPD to install (default latest 2.2 release)
-  - PHP_VERSION   -> the version of PHP to install (default latest 5.4 release)
+  - ADMIN_EMAIL    -> the administrator email defined in HTTPD (default admin@localhost)
+  - DOWNLOAD_URL   -> the URL from where to download the PHP & HTTPD binaries
+  - HTTPD_VERSION  -> the version of HTTPD to install (default latest 2.2 release)
+  - PHP_VERSION    -> the version of PHP to install (default latest 5.4 release)
+  - NR_INSTALL_KEY -> your New Relic key, if specified New Relic support will be enabled
+  - NEWRELIC_DOWNLOAD_URL -> location of New Relic binaries.  Defaults to download.newrelic.com.
+  - NEWRELIC_VERSION -> the version to download, defaults to the latest version
 
 As the file extension indicates, the file should be valid JSON.
 
@@ -76,23 +81,11 @@ New Relic
 
 This build pack can install the New Relic plugin for PHP to monitor your application with the New Relic SaaS application monitoring tool. 
 
-To install it, simply specify your New Relic license key as an environment variable in your manifest.yml file like so:
+To indicate that it should be installed, simply specify your New Relic license key (found on the "Account Settings" screen when you login to New Relic) in your application's options.json file.  Please see the configuration section above for more details on options.json.
 
-```
-   --- 
-   applications: 
-   - buildpack: https://github.com/cdelashmutt-pivotal/cf-php-apache-buildpack
-     path: .
-     instances: 1
-     memory: 256M
-     name: myapp
-     host: myapp-${random-word}
-     domain: cfapps.io
-     env:
-       NR_INSTALL_KEY: <put your license key here>
-```
+Then simply push your application as normal.  The build pack will install and configure New Relic for you.  If you would like to handle the configuration manually, you can simply create an application specific php.ini file and manually add the New Relic configuration options.  The presence of the word "newrelic" will disable the build pack's automatic configuration.
 
-Then simply push your application as normal, and the build pack will enable New Relic support for you.
+Currently the build pack's support is limited to users that have registered directly with New Relic.  Support for users who bind a New Relic server to their application through CloudFoundry may be added in a future release.
 
 Troubleshooting
 ---------------
