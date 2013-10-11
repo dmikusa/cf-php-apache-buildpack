@@ -235,7 +235,7 @@ if __name__ == '__main__':
     # Install New Relic
     newrelic_install_key = config.get('NR_INSTALL_KEY', None)
     if newrelic_install_key:
-        print 'Configuring New Relic PHP agent'
+        print 'Installing New Relic PHP agent'
         newrelic_daemon_folder = 'newrelic'
         newrelic_daemon_name = 'newrelic-daemon'
         newrelic_url = config['NEWRELIC_DOWNLOAD_URL']
@@ -265,17 +265,16 @@ if __name__ == '__main__':
                                    newrelic_arch,
                                    'newrelic-%s%s.so' % (php_api, php_zts))
         newrelic_so_dest = os.path.join(php_module_dir, 'newrelic.so')
-        print 'Copying New Relic library from %s to %s' % (newrelic_so, newrelic_so_dest)
         shutil.copy(newrelic_so, newrelic_so_dest)
         newrelic_daemon_source = os.path.join(newrelic_extracted_dir, 'daemon', 'newrelic-daemon.x64')
         newrelic_daemon_dir = os.path.join(BUILD_DIR, newrelic_daemon_folder)
         newrelic_daemon_dest = os.path.join(newrelic_daemon_dir, newrelic_daemon_name)
-        print 'Copying New Relic daemon to %s' % newrelic_daemon_dest
         os.makedirs(newrelic_daemon_dir)
         shutil.copy(newrelic_daemon_source, newrelic_daemon_dest)
         # Configure New Relic
         vcap_application = json.loads(os.environ.get('VCAP_APPLICATION'))
         if newrelic_needs_configured(php_ini_install_file):
+            print 'Configuring New Relic in php.ini'
             with open(php_ini_install_file, 'a') as file:
                 file.write('extension=newrelic.so\n')
                 file.write('[newrelic]\n')
@@ -289,9 +288,9 @@ if __name__ == '__main__':
                            os.path.join('${TMPDIR}', '.newrelic.sock'))
                 file.write('newrelic.daemon.pidfile=%s\n' %
                            os.path.join('${TMPDIR}', 'newrelic.pid'))
-    else:
-        print 'Skiping New Relic PHP agent install as the ' \
-              'NR_INSTALL_KEY environment varible was not defined'
+        else:
+            print 'New Relic is installed, but not configured due to what' \
+                  ' appears to be an existing New Relic configuration in php.ini'
 
     # Create a startup script
     with open(os.path.join(BUILD_DIR, 'start.sh'), 'wt') as f:
