@@ -92,6 +92,14 @@ def extract_php_info(phpInfoOuput, reStr):
         extract = m.group(1)
     return extract
 
+
+def newrelic_needs_configured(php_ini_install_file):
+    with open(php_ini_install_file, 'rt') as phpIni:
+        for line in phpIni.readline():
+            if line.find('newrelic') >= 0:
+                return False
+    return True
+
 if __name__ == '__main__':
     # Open stdout unbuffered
     sys.stdout = os.fdopen(sys.stdout.fileno(), 'wb', 0)
@@ -267,19 +275,20 @@ if __name__ == '__main__':
         shutil.copy(newrelic_daemon_source, newrelic_daemon_dest)
         # Configure New Relic
         vcap_application = json.loads(os.environ.get('VCAP_APPLICATION'))
-        with open(php_ini_install_file, 'a') as file:
-            file.write('extension=newrelic.so\n')
-            file.write('[newrelic]\n')
-            file.write('newrelic.license=%s\n' % newrelic_install_key)
-            file.write('newrelic.appname=%s\n' % vcap_application['name'])
-            file.write('newrelic.daemon.logfile=%s\n' %
-                       os.path.join('${HOME}', '..', 'logs', 'newrelic-daemon.log'))
-            file.write('newrelic.daemon.location=%s\n' %
-                       os.path.join('${HOME}', newrelic_daemon_folder, newrelic_daemon_name))
-            file.write('newrelic.daemon.port=%s\n' %
-                       os.path.join('${TMPDIR}', '.newrelic.sock'))
-            file.write('newrelic.daemon.pidfile=%s\n' %
-                       os.path.join('${TMPDIR}', 'newrelic.pid'))
+        if newrelic_needs_configured(php_ini_install_file):
+            with open(php_ini_install_file, 'a') as file:
+                file.write('extension=newrelic.so\n')
+                file.write('[newrelic]\n')
+                file.write('newrelic.license=%s\n' % newrelic_install_key)
+                file.write('newrelic.appname=%s\n' % vcap_application['name'])
+                file.write('newrelic.daemon.logfile=%s\n' %
+                           os.path.join('${HOME}', '..', 'logs', 'newrelic-daemon.log'))
+                file.write('newrelic.daemon.location=%s\n' %
+                           os.path.join('${HOME}', newrelic_daemon_folder, newrelic_daemon_name))
+                file.write('newrelic.daemon.port=%s\n' %
+                           os.path.join('${TMPDIR}', '.newrelic.sock'))
+                file.write('newrelic.daemon.pidfile=%s\n' %
+                           os.path.join('${TMPDIR}', 'newrelic.pid'))
     else:
         print 'Skiping New Relic PHP agent install as the ' \
               'NR_INSTALL_KEY environment varible was not defined'
