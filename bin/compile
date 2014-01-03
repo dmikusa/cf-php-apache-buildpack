@@ -305,7 +305,7 @@ if __name__ == '__main__':
         f.write('%s -f %s -k start\n' % (
             os.path.join("$HOME", 'httpd', 'bin', 'apachectl'),
             os.path.join("$HOME", 'httpd', 'conf', 'httpd.conf')))
-        #f.write('while [ 1 -eq 1 ]; do\n')
-        #f.write('    sleep 100000\n')
-        #f.write('done\n')
+        f.write('while [ 1 -eq 1 ]; do\n')
+        f.write('    sleep 100000\n')
+        f.write('done\n')
     os.chmod(os.path.join(BUILD_DIR, 'start.sh'), 0755)
