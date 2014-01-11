@@ -2,7 +2,7 @@
     "ADMIN_EMAIL": "admin@localhost",
     "DOWNLOAD_URL": "https://dl.dropboxusercontent.com/u/186123235/binaries",
     "HTTPD_VERSION": "2.2.26",
-    "PHP_VERSION": "5.4.23",
+    "PHP_VERSION": "5.4.24",
     "NEWRELIC_DOWNLOAD_URL": "https://download.newrelic.com/php_agent/archive",
     "NEWRELIC_VERSION": "4.4.5.35"
 }
