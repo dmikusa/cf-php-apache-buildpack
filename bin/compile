@@ -23,6 +23,7 @@ import json
 import urllib2
 from subprocess import Popen
 from subprocess import PIPE, STDOUT
+from datetime import datetime
 import re
 
 
@@ -101,6 +102,8 @@ def newrelic_needs_configured(php_ini_install_file):
     return True
 
 if __name__ == '__main__':
+    print 'Started: [%s]' % datetime.now()
+
     # Open stdout unbuffered
     sys.stdout = os.fdopen(sys.stdout.fileno(), 'wb', 0)
 
@@ -309,3 +312,5 @@ if __name__ == '__main__':
         f.write('    sleep 100000\n')
         f.write('done\n')
     os.chmod(os.path.join(BUILD_DIR, 'start.sh'), 0755)
+
+    print 'Finished: [%s]' % datetime.now()
