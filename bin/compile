@@ -102,10 +102,10 @@ def newrelic_needs_configured(php_ini_install_file):
     return True
 
 if __name__ == '__main__':
-    print 'Started: [%s]' % datetime.now()
-
     # Open stdout unbuffered
     sys.stdout = os.fdopen(sys.stdout.fileno(), 'wb', 0)
+
+    print 'Started: [%s]' % datetime.now()
 
     # User's application files
     BUILD_DIR = sys.argv[1]
