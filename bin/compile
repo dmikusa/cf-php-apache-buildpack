@@ -105,6 +105,23 @@ if __name__ == '__main__':
     # Open stdout unbuffered
     sys.stdout = os.fdopen(sys.stdout.fileno(), 'wb', 0)
 
+    print ''
+    print '--------------------------------------------------------'
+    print '|                     WARNING                          |'
+    print '--------------------------------------------------------'
+    print '|                                                      |'
+    print '|        THIS BUILD PACK HAS BEEN DEPRECATED.          |'
+    print '|                                                      |'
+    print '|             IT HAS BEEN REPLACED BY:                 |'
+    print '| https://github.com/dmikusa-pivotal/cf-php-build-pack |'
+    print '|                                                      |'
+    print '|                 PLEASE UPGRADE!!                     |'
+    print '|                                                      |'
+    print '|  THIS BUILD PACK WILL CEASE TO EXISTS AFTER 6/30/14  |'
+    print '|                                                      |'
+    print '--------------------------------------------------------'
+    print ''
+
     print 'Started: [%s]' % datetime.now()
 
     # User's application files
