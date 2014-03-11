@@ -1,3 +1,10 @@
+# WARNING
+# THIS BUILD PACK HAS BEEN DEPRECATED.
+# IT HAS BEEN REPLACED BY: [https://github.com/dmikusa-pivotal/cf-php-build-pack](https://github.com/dmikusa-pivotal/cf-php-build-pack)
+# PLEASE UPGRADE!!
+# THIS BUILD PACK WILL CEASE TO EXISTS AFTER 6/30/14
+
+
 CloudFoundry PHP &amp; Apache HTTPD Buildpack
 =============================================
 
